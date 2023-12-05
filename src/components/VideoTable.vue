@@ -1,0 +1,323 @@
+<template>
+    <!-- 列表 -->
+    <div v-show="!playVideo">
+        <!-- 对列表进行条件筛选 -->
+        <div>
+            <el-select multiple v-model="selectedFavor" placeholder="收藏夹">
+                <!-- TODO 显示一下每个选项的数量 -->
+                <el-option v-for="(val, key) in property.favor" :value="key" :key="key" />
+            </el-select>
+            <el-select multiple v-model="selectedPeople" placeholder="人物">
+                <el-option
+                    v-for="(val, key) in property.people"
+                    :value="key"
+                    :key="key"
+                />
+            </el-select>
+            <el-select multiple v-model="selectedTag" placeholder="标签">
+                <el-option v-for="(val, key) in property.tag" :value="key" :key="key" />
+            </el-select>
+            <el-button type="primary" @click="handleSearch"> 搜索 </el-button>
+        </div>
+
+        <!-- 分页器 -->
+        <el-pagination
+            layout="prev, pager, next"
+            :page-size="pageSize"
+            :total="videoNum"
+            :current-page="curPage"
+            @current-change="handleCurrentPageChange"
+        />
+        <el-button type="primary" @click="openSetFavorDialog"> 收藏至</el-button>
+        <el-dialog v-model="showSetFavorDialog" width="30%" title="收藏至">
+            <el-input v-model="inputFavor" />
+            <el-button @click="setFavor">确认</el-button>
+        </el-dialog>
+
+        <!-- 表格 -->
+        <el-table
+            :data="tableData"
+            style="width: 100%; height: 100%"
+            border="true"
+            stripe="true"
+            @selection-change="handleTableSelection"
+            :row-key="item_name"
+            :cell-style="{ padding: 0 + 'px' }"
+        >
+            <el-table-column fixed type="selection" width="40" />
+            <el-table-column fixed prop="video_info.title" label="标题" width="300" />
+            <el-table-column fixed prop="video_info.page_title" label="分P" width="200" />
+
+            <el-table-column label="封面" width="120">
+                <template #default="scope">
+                    <el-image
+                        :src="imageUrl(scope.row.video_info.cover)"
+                        :fit="contain"
+                    />
+                </template>
+            </el-table-column>
+            <el-table-column prop="video_info.owner_name" label="UP主" width="120" />
+            <el-table-column prop="favor_name" label="收藏夹" width="80" />
+            <el-table-column label="更新时间" width="100">
+                <template #default="scope">{{
+                    timestamp2date(scope.row.video_info.update_time)
+                }}</template>
+            </el-table-column>
+            <el-table-column label="人物" width="80">
+                <template #default="scope">{{
+                    scope.row.video_info.custom_info.people.join(",")
+                }}</template>
+            </el-table-column>
+            <el-table-column label="标签" width="80">
+                <template #default="scope">{{
+                    scope.row.video_info.custom_info.tag.join(",")
+                }}</template>
+            </el-table-column>
+
+            <el-table-column prop="address" label="Address" />
+            <el-table-column fixed="right" label="操作" width="150">
+                <template #default="scope">
+                    <el-button type="primary" size="small" @click="handlePlay(scope.row)"
+                        >播放</el-button
+                    >
+                    <el-button link type="primary" size="small" @click="handleClick">
+                        JSON
+                    </el-button>
+                    <el-button link type="primary" size="small" @click="handleClick">
+                        B站
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
+
+    <!-- 视频播放 -->
+    <div v-show="playVideo">
+        <el-button type="primary" @click="handleReturnButton"> 返回 </el-button>
+        <video id="video" width="1280" height="720" controls loop :src="videoUrl()" />
+        <audio id="audio" loop :src="audioUrl()" />
+    </div>
+</template>
+
+<script>
+import axios from "axios";
+
+export default {
+    /*
+        数据
+    */
+    data() {
+        // create生命周期后才实例化
+        return {
+            // 分页器
+            videoNum: 0, // 视频总量
+            curPage: 1, // 当前页
+            pageSize: 10,
+            // 选中的筛选条件，都是多选
+            selectedFavor: [],
+            selectedPeople: [],
+            selectedTag: [],
+            // 表格选中的行
+            selectedRow: [],
+            // 表格
+            tableData: [
+                {
+                    favor_name: "",
+                    item_name: "",
+                    page_name: "",
+                    video_info: {
+                        title: "",
+                        page_title: "",
+                        type: "",
+                        owner_id: 0,
+                        owner_name: "",
+                        cover: "",
+                        update_time: 0,
+                        direction: "",
+                        size: 0,
+                        length: 0,
+                        quality: "",
+                        height: 0,
+                        width: 0,
+                        fps: 0.0,
+                        bvid: "",
+                        avid: 0,
+                        custom_info: {
+                            people: [],
+                            tag: [],
+                            description: "",
+                            star_level: 0,
+                            colletion_time: 0,
+                        },
+                    },
+                },
+            ],
+            // 属性
+            property: {
+                favor: {},
+                people: {},
+                tag: {},
+            },
+            // 播放视频
+            playVideo: false,
+            playVideoPath: "",
+            // 弹窗
+            showSetFavorDialog: false,
+            inputFavor: "",
+        };
+    },
+    /*
+        方法
+    */
+    methods: {
+        /*
+          调接口
+        */
+        // 获取列表数据
+        getData() {
+            axios
+                .get(
+                    "http://localhost:1024/api/video/list?page=" +
+                        this.curPage +
+                        "&page_size=" +
+                        this.pageSize +
+                        "&favor=" +
+                        this.selectedFavor
+                )
+                .then((response) => {
+                    this.tableData = response.data.list;
+                    this.videoNum = response.data.count;
+                    console.log(this.tableData);
+                });
+        },
+        // 获取Property
+        getProperty() {
+            axios.get("http://localhost:1024/api/get-property").then((response) => {
+                this.property = response.data;
+                console.log(this.property);
+            });
+        },
+        /*
+            事件处理Handler
+        */
+        // 处理页数变更
+        handleCurrentPageChange(val) {
+            this.curPage = val;
+            this.getData();
+            console.log(this.curPage);
+        },
+        // 处理Favor筛选框
+        handleSearch() {
+            this.getData();
+        },
+        // 处理表格多选
+        handleTableSelection(val) {
+            this.selectedRow = val;
+            console.log(this.selectedRow);
+        },
+        // 处理播放按钮
+        handlePlay(v) {
+            this.playVideoPath =
+                v.favor_name +
+                "/" +
+                v.item_name +
+                "/" +
+                v.page_name +
+                "/" +
+                v.video_info.media_folder_name +
+                "/";
+            console.log(this.playVideoPath);
+            this.playVideo = !this.playVideo;
+            console.log(this.playVideo);
+        },
+        // 处理返回按钮
+        handleReturnButton() {
+            this.playVideo = !this.playVideo;
+            this.playVideoPath = "";
+            const video = document.getElementById("video");
+            const audio = document.getElementById("audio");
+            video.pause();
+            audio.pause();
+        },
+        // 设置收藏夹
+        openSetFavorDialog() {
+            this.showSetFavorDialog = true;
+        },
+        setFavor() {
+            var videoNameList = [];
+            for (var i = 0; i < this.selectedRow.length; i++) {
+                var row = this.selectedRow[i];
+                videoNameList.push(row.item_name + ";" + row.page_name);
+            }
+            console.log(videoNameList);
+            axios
+                .put("http://localhost:1024/api/video/update-favor", {
+                    video_name_list: videoNameList,
+                    new_favor_name: this.inputFavor,
+                })
+                .then(() => {
+                    this.showSetFavorDialog = false;
+                    this.getData();
+                    this.getProperty();
+                });
+        },
+        /*
+          工具Util
+        */
+        // 图片url转换
+        imageUrl(imageName) {
+            // return require("D:/IdeaProject/BVP/assets/cover/" + imageName);
+            return require("../../../assets/cover/" + imageName);
+        },
+        // 视频和音频url转换
+        videoUrl() {
+            if (this.playVideoPath == "") {
+                return "";
+            }
+            return require("../../../assets/video/" + this.playVideoPath + "video.mp4");
+        },
+        audioUrl() {
+            if (this.playVideoPath == "") {
+                return "";
+            }
+            return require("../../../assets/video/" + this.playVideoPath + "audio.mp3");
+        },
+        // 时间戳转日期
+        timestamp2date(timestamp) {
+            var date = new Date(timestamp);
+            var Y = this.dateInt2string(date.getFullYear());
+            var M = this.dateInt2string(date.getMonth());
+            var D = this.dateInt2string(date.getDate());
+            var h = this.dateInt2string(date.getHours());
+            var m = this.dateInt2string(date.getMinutes());
+            var s = this.dateInt2string(date.getSeconds());
+            return Y + "." + M + "." + D + " " + h + ":" + m + ":" + s;
+        },
+        // 返回的整数转成长度为2的字符串
+        dateInt2string(num) {
+            if (num < 10) {
+                return "0" + num;
+            } else return num.toString();
+        },
+    },
+    /*
+        挂载时
+    */
+    mounted() {
+        this.getData();
+        this.getProperty();
+
+        const video = document.getElementById("video");
+        const audio = document.getElementById("audio");
+        video.addEventListener("play", () => {
+            audio.play();
+        });
+        video.addEventListener("pause", () => {
+            audio.pause();
+        });
+        video.addEventListener("timeupdate", () => {
+            audio.currentTime = video.currentTime;
+        });
+    },
+};
+</script>
