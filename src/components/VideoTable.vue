@@ -81,10 +81,7 @@
 
             <el-table-column label="封面" width="120">
                 <template #default="scope">
-                    <el-image
-                        :src="imageUrl(scope.row.video_info.cover)"
-                        :fit="contain"
-                    />
+                    <el-image :src="scope.row.video_info.cover" fit="contain" />
                 </template>
             </el-table-column>
             <el-table-column prop="video_info.owner_name" label="UP主" width="120" />
@@ -232,7 +229,11 @@ export default {
                         this.selectedDirection
                 )
                 .then((response) => {
-                    this.tableData = response.data.list;
+                    var list = response.data.list.map((val) => {
+                        val.video_info.cover = "cover/" + val.video_info.cover;
+                        return val;
+                    });
+                    this.tableData = list;
                     this.videoNum = response.data.count;
                     console.log(this.tableData);
                 });
@@ -302,11 +303,6 @@ export default {
         /*
           工具Util
         */
-        // 图片url转换
-        imageUrl(imageName) {
-            // return require("D:/IdeaProject/BVP/assets/cover/" + imageName);
-            return require("../../../assets/cover/" + imageName);
-        },
         // 视频url转换
         videoUrl() {
             if (this.playVideoPath == "") {
