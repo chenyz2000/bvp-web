@@ -265,11 +265,13 @@ export default {
         },
         // 处理播放按钮
         handlePlay(v) {
+            this.playVideo = !this.playVideo;
             this.playVideoPath =
                 v.favor_name + "/" + v.item_name + "/" + v.page_name + "/";
-            console.log(this.playVideoPath);
-            this.playVideo = !this.playVideo;
-            console.log(this.playVideo);
+            setTimeout(() => {
+                const video = document.getElementById("video");
+                video.play();
+            }, 500);
         },
         // 处理返回按钮
         handleReturnButton() {
