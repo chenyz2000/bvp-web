@@ -75,11 +75,16 @@
             </el-table-column>
 
             <el-table-column prop="address" label="Address" />
-            <el-table-column fixed="right" label="操作" width="150">
+            <el-table-column fixed="right" label="操作" width="120">
                 <template #default="scope">
-                    <el-button type="primary" size="small" @click="handlePlay(scope.row)"
+                    <el-button
+                        type="primary"
+                        size="small"
+                        :disabled="!scope.row.video_info.transcoded"
+                        @click="handlePlay(scope.row)"
                         >播放</el-button
                     >
+                    <br/>
                     <el-button link type="primary" size="small" @click="handleClick">
                         JSON
                     </el-button>
@@ -95,7 +100,6 @@
     <div v-show="playVideo">
         <el-button type="primary" @click="handleReturnButton"> 返回 </el-button>
         <video id="video" width="1280" height="720" controls loop :src="videoUrl()" />
-        <audio id="audio" loop :src="audioUrl()" />
     </div>
 </template>
 
@@ -218,14 +222,7 @@ export default {
         // 处理播放按钮
         handlePlay(v) {
             this.playVideoPath =
-                v.favor_name +
-                "/" +
-                v.item_name +
-                "/" +
-                v.page_name +
-                "/" +
-                v.video_info.media_folder_name +
-                "/";
+                v.favor_name + "/" + v.item_name + "/" + v.page_name + "/";
             console.log(this.playVideoPath);
             this.playVideo = !this.playVideo;
             console.log(this.playVideo);
@@ -235,9 +232,7 @@ export default {
             this.playVideo = !this.playVideo;
             this.playVideoPath = "";
             const video = document.getElementById("video");
-            const audio = document.getElementById("audio");
             video.pause();
-            audio.pause();
         },
         // 设置收藏夹
         openSetFavorDialog() {
@@ -269,18 +264,12 @@ export default {
             // return require("D:/IdeaProject/BVP/assets/cover/" + imageName);
             return require("../../../assets/cover/" + imageName);
         },
-        // 视频和音频url转换
+        // 视频url转换
         videoUrl() {
             if (this.playVideoPath == "") {
                 return "";
             }
-            return require("../../../assets/video/" + this.playVideoPath + "video.mp4");
-        },
-        audioUrl() {
-            if (this.playVideoPath == "") {
-                return "";
-            }
-            return require("../../../assets/video/" + this.playVideoPath + "audio.mp3");
+            return require("../../../assets/video/" + this.playVideoPath + "out.mp4");
         },
         // 时间戳转日期
         timestamp2date(timestamp) {
@@ -306,18 +295,6 @@ export default {
     mounted() {
         this.getData();
         this.getProperty();
-
-        const video = document.getElementById("video");
-        const audio = document.getElementById("audio");
-        video.addEventListener("play", () => {
-            audio.play();
-        });
-        video.addEventListener("pause", () => {
-            audio.pause();
-        });
-        video.addEventListener("timeupdate", () => {
-            audio.currentTime = video.currentTime;
-        });
     },
 };
 </script>
