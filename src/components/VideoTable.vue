@@ -3,19 +3,50 @@
     <div v-show="!playVideo">
         <!-- 对列表进行条件筛选 -->
         <div>
-            <el-select multiple v-model="selectedFavor" placeholder="收藏夹">
+            <el-select multiple v-model="selectedFavor" style="width:200px" collapse-tags placeholder="收藏夹">
                 <!-- TODO 显示一下每个选项的数量 -->
-                <el-option v-for="(val, key) in property.favor" :value="key" :key="key" />
+                <el-option v-for="(val, key) in property.favor" :value="key" :key="key">
+                    <span style="float：left">{{ key }}</span>
+                    <span style="float: right; color: var(--el-text-color-secondary)">{{
+                        val
+                    }}</span>
+                </el-option>
             </el-select>
-            <el-select multiple v-model="selectedPeople" placeholder="人物">
+            <el-select multiple v-model="selectedPeople" style="width:200px" collapse-tags placeholder="人物">
+                <el-option v-for="(val, key) in property.people" :value="key" :key="key">
+                    <span style="float：left">{{ key }}</span>
+                    <span style="float: right; color: var(--el-text-color-secondary)">{{
+                        val
+                    }}</span>
+                </el-option>
+            </el-select>
+            <el-select multiple v-model="selectedTag" style="width:200px" collapse-tags placeholder="标签">
+                <el-option v-for="(val, key) in property.tag" :value="key" :key="key">
+                    <span style="float：left">{{ key }}</span>
+                    <span style="float: right; color: var(--el-text-color-secondary)">{{
+                        val
+                    }}</span>
+                </el-option>
+            </el-select>
+            <el-select multiple v-model="selectedClarity" style="width:200px" collapse-tags placeholder="清晰度">
+                <el-option v-for="(val, key) in property.clarity" :value="key" :key="key">
+                    <span style="float：left">{{ key }}</span>
+                    <span style="float: right; color: var(--el-text-color-secondary)">{{
+                        val
+                    }}</span>
+                </el-option>
+            </el-select>
+            <el-select multiple v-model="selectedDirection" style="width:200px" collapse-tags placeholder="方向">
                 <el-option
-                    v-for="(val, key) in property.people"
+                    v-for="(val, key) in property.direction"
                     :value="key"
                     :key="key"
-                />
-            </el-select>
-            <el-select multiple v-model="selectedTag" placeholder="标签">
-                <el-option v-for="(val, key) in property.tag" :value="key" :key="key" />
+                >
+                    <span style="float：left">{{ key }}</span>
+                    <span style="float: right; color: var(--el-text-color-secondary)">{{
+                        val
+                    }}</span>
+                </el-option>
             </el-select>
             <el-button type="primary" @click="handleSearch"> 搜索 </el-button>
         </div>
@@ -84,7 +115,7 @@
                         @click="handlePlay(scope.row)"
                         >播放</el-button
                     >
-                    <br/>
+                    <br />
                     <el-button link type="primary" size="small" @click="handleClick">
                         JSON
                     </el-button>
@@ -121,6 +152,8 @@ export default {
             selectedFavor: [],
             selectedPeople: [],
             selectedTag: [],
+            selectedClarity: [],
+            selectedDirection: [],
             // 表格选中的行
             selectedRow: [],
             // 表格
@@ -161,6 +194,8 @@ export default {
                 favor: {},
                 people: {},
                 tag: {},
+                clarity: {},
+                direction: {},
             },
             // 播放视频
             playVideo: false,
@@ -186,7 +221,15 @@ export default {
                         "&page_size=" +
                         this.pageSize +
                         "&favor=" +
-                        this.selectedFavor
+                        this.selectedFavor +
+                        "&people=" +
+                        this.selectedPeople +
+                        "&tag=" +
+                        this.selectedTag +
+                        "&clarity=" +
+                        this.selectedClarity +
+                        "&direction=" +
+                        this.selectedDirection
                 )
                 .then((response) => {
                     this.tableData = response.data.list;
