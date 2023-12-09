@@ -3,8 +3,13 @@
     <div v-show="!playVideo">
         <!-- 对列表进行条件筛选 -->
         <div>
-            <el-select multiple v-model="selectedFavor" style="width:200px" collapse-tags placeholder="收藏夹">
-                <!-- TODO 显示一下每个选项的数量 -->
+            <el-select
+                multiple
+                v-model="selectedFavor"
+                style="width: 200px"
+                collapse-tags
+                placeholder="收藏夹"
+            >
                 <el-option v-for="(val, key) in property.favor" :value="key" :key="key">
                     <span style="float：left">{{ key }}</span>
                     <span style="float: right; color: var(--el-text-color-secondary)">{{
@@ -12,7 +17,13 @@
                     }}</span>
                 </el-option>
             </el-select>
-            <el-select multiple v-model="selectedPeople" style="width:200px" collapse-tags placeholder="人物">
+            <el-select
+                multiple
+                v-model="selectedPeople"
+                style="width: 200px"
+                collapse-tags
+                placeholder="人物"
+            >
                 <el-option v-for="(val, key) in property.people" :value="key" :key="key">
                     <span style="float：left">{{ key }}</span>
                     <span style="float: right; color: var(--el-text-color-secondary)">{{
@@ -20,7 +31,13 @@
                     }}</span>
                 </el-option>
             </el-select>
-            <el-select multiple v-model="selectedTag" style="width:200px" collapse-tags placeholder="标签">
+            <el-select
+                multiple
+                v-model="selectedTag"
+                style="width: 200px"
+                collapse-tags
+                placeholder="标签"
+            >
                 <el-option v-for="(val, key) in property.tag" :value="key" :key="key">
                     <span style="float：left">{{ key }}</span>
                     <span style="float: right; color: var(--el-text-color-secondary)">{{
@@ -28,7 +45,13 @@
                     }}</span>
                 </el-option>
             </el-select>
-            <el-select multiple v-model="selectedClarity" style="width:200px" collapse-tags placeholder="清晰度">
+            <el-select
+                multiple
+                v-model="selectedClarity"
+                style="width: 200px"
+                collapse-tags
+                placeholder="清晰度"
+            >
                 <el-option v-for="(val, key) in property.clarity" :value="key" :key="key">
                     <span style="float：left">{{ key }}</span>
                     <span style="float: right; color: var(--el-text-color-secondary)">{{
@@ -36,7 +59,13 @@
                     }}</span>
                 </el-option>
             </el-select>
-            <el-select multiple v-model="selectedDirection" style="width:200px" collapse-tags placeholder="方向">
+            <el-select
+                multiple
+                v-model="selectedDirection"
+                style="width: 200px"
+                collapse-tags
+                placeholder="方向"
+            >
                 <el-option
                     v-for="(val, key) in property.direction"
                     :value="key"
@@ -75,10 +104,11 @@
             :row-key="item_name"
             :cell-style="{ padding: 0 + 'px' }"
         >
+            <!-- 左侧固定 -->
             <el-table-column fixed type="selection" width="40" />
             <el-table-column fixed prop="video_info.title" label="标题" width="300" />
             <el-table-column fixed prop="video_info.page_title" label="分P" width="200" />
-
+            <!-- 中间 -->
             <el-table-column label="封面" width="120">
                 <template #default="scope">
                     <el-image :src="scope.row.video_info.cover" fit="contain" />
@@ -101,8 +131,12 @@
                     scope.row.video_info.custom_info.tag.join(",")
                 }}</template>
             </el-table-column>
-
-            <el-table-column prop="address" label="Address" />
+            <el-table-column label="描述">
+                <template #default="scope">{{
+                    scope.row.video_info.custom_info.description
+                }}</template>
+            </el-table-column>
+            <!-- 右侧固定 -->
             <el-table-column fixed="right" label="操作" width="120">
                 <template #default="scope">
                     <el-button
@@ -202,6 +236,7 @@ export default {
             inputFavor: "",
         };
     },
+
     /*
         方法
     */
@@ -330,6 +365,7 @@ export default {
             } else return num.toString();
         },
     },
+
     /*
         挂载时
     */
