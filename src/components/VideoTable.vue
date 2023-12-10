@@ -88,6 +88,7 @@
             :current-page="curPage"
             @current-change="handleCurrentPageChange"
         />
+        <el-button type="primary" @click="handleRefresh"> Refresh </el-button>
         <el-button type="primary" @click="openSetFavorDialog"> 收藏至</el-button>
         <el-dialog v-model="showSetFavorDialog" width="30%" title="收藏至">
             <el-input v-model="inputFavor" />
@@ -292,6 +293,13 @@ export default {
         // 处理Favor筛选框
         handleSearch() {
             this.getData();
+        },
+        // 处理Refresh
+        handleRefresh() {
+            axios.get("http://localhost:1024/api/refresh").then((response) => {
+                console.log(response);
+                this.getData();
+            });
         },
         // 处理表格多选
         handleTableSelection(val) {
