@@ -176,6 +176,8 @@ export default {
     data() {
         // create生命周期后才实例化
         return {
+            // 请求的根路径
+            rootUrl: "http://localhost:1024",
             // 分页器
             videoNum: 0, // 视频总量
             curPage: 1, // 当前页
@@ -249,7 +251,8 @@ export default {
         getData() {
             axios
                 .get(
-                    "http://localhost:1024/api/video/list?page=" +
+                    this.rootUrl +
+                        "/api/video/list?page=" +
                         this.curPage +
                         "&page_size=" +
                         this.pageSize +
@@ -276,7 +279,7 @@ export default {
         },
         // 获取Property
         getProperty() {
-            axios.get("http://localhost:1024/api/get-property").then((response) => {
+            axios.get(this.rootUrl + "/api/get-property").then((response) => {
                 this.property = response.data;
                 console.log(this.property);
             });
@@ -296,7 +299,7 @@ export default {
         },
         // 处理Refresh
         handleRefresh() {
-            axios.get("http://localhost:1024/api/refresh").then((response) => {
+            axios.get(this.rootUrl + "/api/refresh").then((response) => {
                 console.log(response);
                 this.getData();
             });
@@ -335,7 +338,7 @@ export default {
             }
             console.log(videoNameList);
             axios
-                .put("http://localhost:1024/api/video/update-favor", {
+                .put(this.rootUrl + "/api/video/update-favor", {
                     video_name_list: videoNameList,
                     new_favor_name: this.inputFavor,
                 })
