@@ -88,11 +88,16 @@
             :current-page="curPage"
             @current-change="handleCurrentPageChange"
         />
+        <!--表格上方按钮-->
         <el-button type="primary" @click="handleRefresh"> Refresh </el-button>
-        <el-button type="primary" @click="openSetFavorDialog"> 收藏至</el-button>
-        <el-dialog v-model="showSetFavorDialog" width="30%" title="收藏至">
-            <el-input v-model="inputFavor" />
-            <el-button @click="setFavor">确认</el-button>
+        <el-button type="primary" @click="openBatchDialog"> 批量修改</el-button>
+        <el-dialog v-model="showBatchDialog" width="30%" title="批量修改">
+            <el-input v-model="inputFavor" placeholder="收藏夹" />
+            <el-button type="primary" @click="setFavor">修改收藏夹</el-button>
+            <el-divider />
+            <el-input v-model="inputPeople" placeholder="人物（空格分割）" />
+            <el-input v-model="inputTag" placeholder="标签（空格分割）" />
+            <el-button type="primary" @click="setCustom">修改人物、标签</el-button>
         </el-dialog>
 
         <!-- 表格 -->
@@ -255,8 +260,10 @@ export default {
             playVideo: false,
             playVideoPath: "",
             // 收藏夹弹窗
-            showSetFavorDialog: false,
+            showBatchDialog: false,
             inputFavor: "",
+            inputPeople: "",
+            inputTag: "",
             // JSON弹窗
             showJSONDialog: false,
             JSONStr: "",
@@ -361,10 +368,11 @@ export default {
             const video = document.getElementById("video");
             video.pause();
         },
-        // 设置收藏夹
-        openSetFavorDialog() {
-            this.showSetFavorDialog = true;
+        // 打开批量修改对话框
+        openBatchDialog() {
+            this.showBatchDialog = true;
         },
+        // 批量修改收藏夹
         setFavor() {
             var videoNameList = [];
             for (var i = 0; i < this.selectedRow.length; i++) {
@@ -378,7 +386,27 @@ export default {
                     new_favor_name: this.inputFavor,
                 })
                 .then(() => {
-                    this.showSetFavorDialog = false;
+                    this.showBatchDialog = false;
+                    this.getData();
+                    this.getProperty();
+                });
+        },
+        // 批量修改人物和标签
+        setCustom() {
+            var videoNameList = [];
+            for (var i = 0; i < this.selectedRow.length; i++) {
+                var row = this.selectedRow[i];
+                videoNameList.push(row.item_name + ";" + row.page_name);
+            }
+            console.log(videoNameList);
+            axios
+                .put(this.rootUrl + "/api/video/batch-add", {
+                    video_name_list: videoNameList,
+                    people_list: this.inputPeople.split(" "),
+                    tag_list: this.inputTag.split(" "),
+                })
+                .then(() => {
+                    this.showBatchDialog = false;
                     this.getData();
                     this.getProperty();
                 });
