@@ -148,15 +148,35 @@
                         >播放</el-button
                     >
                     <br />
-                    <el-button link type="primary" size="small" @click="handleClick">
+                    <el-button
+                        link
+                        type="primary"
+                        size="small"
+                        @click="handleJSON(scope.row)"
+                    >
                         JSON
                     </el-button>
-                    <el-button link type="primary" size="small" @click="handleClick">
+                    <el-button
+                        link
+                        type="primary"
+                        size="small"
+                        @click="handleLink(scope.row.video_info)"
+                        target="_blank"
+                    >
                         B站
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
+
+        <!--JSON弹窗-->
+        <el-dialog v-model="showJSONDialog" width="70%" title="JSON">
+            <el-input
+                v-model="JSONStr"
+                :autosize="{ minRows: 10, maxRows: 20 }"
+                type="textarea"
+            />
+        </el-dialog>
     </div>
 
     <!-- 视频播放 -->
@@ -234,9 +254,12 @@ export default {
             // 播放视频
             playVideo: false,
             playVideoPath: "",
-            // 弹窗
+            // 收藏夹弹窗
             showSetFavorDialog: false,
             inputFavor: "",
+            // JSON弹窗
+            showJSONDialog: false,
+            JSONStr: "",
         };
     },
 
@@ -318,6 +341,18 @@ export default {
                 const video = document.getElementById("video");
                 video.play();
             }, 500);
+        },
+        // 处理JSON按钮
+        handleJSON(row) {
+            this.showJSONDialog = true;
+            this.JSONStr = JSON.stringify(row, null, "    ");
+        },
+        // 处理跳转b站按钮
+        handleLink(v) {
+            window.open(
+                "https://www.bilibili.com/video/" + v.bvid + "?p=" + v.page_order,
+                "_blank"
+            );
         },
         // 处理返回按钮
         handleReturnButton() {
