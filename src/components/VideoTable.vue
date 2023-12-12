@@ -204,9 +204,17 @@
     </div>
 
     <!-- 视频播放 -->
-    <div v-show="playVideo">
+    <div v-show="playVideo" :span="24">
         <el-button type="primary" @click="handleReturnButton"> 返回 </el-button>
-        <video id="video" width="1280" height="720" controls loop :src="videoUrl()" />
+        <video
+            id="video"
+            controls
+            loop
+            width="100%"
+            :height="windowHeight"
+            style="object-fit: contain"
+            :src="videoUrl()"
+        />
     </div>
 </template>
 
@@ -293,6 +301,8 @@ export default {
             // JSON弹窗
             showJSONDialog: false,
             JSONStr: "",
+            //页面高度
+            windowHeight: window.innerHeight * 0.9 + "px",
         };
     },
 
