@@ -95,8 +95,8 @@
             <el-input v-model="inputFavor" placeholder="收藏夹" />
             <el-button type="primary" @click="setFavor">修改收藏夹</el-button>
             <el-divider />
-            <el-input v-model="inputPeople" placeholder="人物（空格分割）" />
-            <el-input v-model="inputTag" placeholder="标签（空格分割）" />
+            <el-input v-model="inputBatchPeople" placeholder="人物（逗号分割）" />
+            <el-input v-model="inputBatchTag" placeholder="标签（逗号分割）" />
             <el-button type="primary" @click="setCustom">修改人物、标签</el-button>
         </el-dialog>
 
@@ -143,7 +143,7 @@
                 }}</template>
             </el-table-column>
             <!-- 右侧固定 -->
-            <el-table-column fixed="right" label="操作" width="120">
+            <el-table-column fixed="right" label="操作" width="140">
                 <template #default="scope">
                     <el-button
                         type="primary"
@@ -152,7 +152,14 @@
                         @click="handlePlay(scope.row)"
                         >播放</el-button
                     >
-                    <br />
+                    <el-button
+                        link
+                        type="primary"
+                        size="small"
+                        @click="handleCustom(scope.row)"
+                    >
+                        Custom
+                    </el-button>
                     <el-button
                         link
                         type="primary"
@@ -174,6 +181,18 @@
             </el-table-column>
         </el-table>
 
+        <!--Custom弹窗-->
+        <el-dialog v-model="showCustomDialog" width="30%" title="Custom">
+            人物：
+            <el-input v-model="inputPeople" placeholder="人物" />
+            标签：
+            <el-input v-model="inputTag" placeholder="标签" />
+            描述：
+            <el-input v-model="inputDescription" placeholder="描述" />
+            星级：
+            <el-input-number v-model="inputStarLevel" :min="0" :max="3" />
+            <el-button type="primary" @click="handleCustomSubmit">修改Custom</el-button>
+        </el-dialog>
         <!--JSON弹窗-->
         <el-dialog v-model="showJSONDialog" width="70%" title="JSON">
             <el-input
@@ -262,8 +281,15 @@ export default {
             // 收藏夹弹窗
             showBatchDialog: false,
             inputFavor: "",
+            inputBatchPeople: "",
+            inputBatchTag: "",
+            // Custom弹窗
+            showCustomDialog: false,
+            customVideoName: "",
             inputPeople: "",
             inputTag: "",
+            inputDescription: "",
+            inputStarLevel: 0,
             // JSON弹窗
             showJSONDialog: false,
             JSONStr: "",
@@ -349,6 +375,33 @@ export default {
                 video.play();
             }, 500);
         },
+        // 处理Custom按钮
+        handleCustom(row) {
+            this.showCustomDialog = true;
+            this.inputPeople = row.video_info.custom_info.people.join(",");
+            this.inputTag = row.video_info.custom_info.tag.join(",");
+            this.inputDescription = row.video_info.custom_info.description;
+            this.inputStarLevel = row.video_info.custom_info.star_level;
+            this.customVideoName = row.item_name + ";" + row.page_name;
+        },
+        // 处理Custom弹窗中的确认按钮
+        handleCustomSubmit() {
+            axios
+                .put(this.rootUrl + "/api/video/update-custom", {
+                    video_name: this.customVideoName,
+                    custom_info: {
+                        people: this.inputPeople.split(","),
+                        tag: this.inputTag.split(","),
+                        description: this.inputDescription,
+                        star_level: this.inputStarLevel,
+                    },
+                })
+                .then(() => {
+                    this.showCustomDialog = false;
+                    this.getData();
+                    this.getProperty();
+                });
+        },
         // 处理JSON按钮
         handleJSON(row) {
             this.showJSONDialog = true;
@@ -402,8 +455,8 @@ export default {
             axios
                 .put(this.rootUrl + "/api/video/batch-add", {
                     video_name_list: videoNameList,
-                    people_list: this.inputPeople.split(" "),
-                    tag_list: this.inputTag.split(" "),
+                    people_list: this.inputBatchPeople.split(","),
+                    tag_list: this.inputBatchTag.split(","),
                 })
                 .then(() => {
                     this.showBatchDialog = false;
