@@ -91,7 +91,7 @@
         <!--表格上方按钮-->
         <el-button type="primary" @click="handleRefresh"> Refresh </el-button>
         <el-button type="primary" @click="openBatchDialog"> 批量修改</el-button>
-        <el-dialog v-model="showBatchDialog" width="30%" title="批量修改">
+        <el-dialog v-model="showBatchDialog" :width="autoWidth(40)" title="批量修改">
             <el-input v-model="inputFavor" placeholder="收藏夹" />
             <el-button type="primary" @click="setFavor">修改收藏夹</el-button>
             <el-divider />
@@ -111,9 +111,19 @@
             :cell-style="{ padding: 0 + 'px' }"
         >
             <!-- 左侧固定 -->
-            <el-table-column fixed type="selection" width="40" />
-            <el-table-column fixed prop="video_info.title" label="标题" width="300" />
-            <el-table-column fixed prop="video_info.page_title" label="分P" width="200" />
+            <el-table-column :fixed="isLandscapeDevice" type="selection" width="40" />
+            <el-table-column
+                :fixed="isLandscapeDevice"
+                prop="video_info.title"
+                label="标题"
+                width="300"
+            />
+            <el-table-column
+                :fixed="isLandscapeDevice"
+                prop="video_info.page_title"
+                label="分P"
+                width="200"
+            />
             <!-- 中间 -->
             <el-table-column label="封面" width="120">
                 <template #default="scope">
@@ -143,15 +153,12 @@
                 }}</template>
             </el-table-column>
             <!-- 右侧固定 -->
-            <el-table-column fixed="right" label="操作" width="140">
+            <el-table-column
+                :fixed="isLandscapeDevice ? 'right' : false"
+                label="操作"
+                width="75"
+            >
                 <template #default="scope">
-                    <el-button
-                        type="primary"
-                        size="small"
-                        :disabled="!scope.row.video_info.transcoded"
-                        @click="handlePlay(scope.row)"
-                        >播放</el-button
-                    >
                     <el-button
                         link
                         type="primary"
@@ -160,6 +167,7 @@
                     >
                         Custom
                     </el-button>
+                    <br />
                     <el-button
                         link
                         type="primary"
@@ -168,6 +176,7 @@
                     >
                         JSON
                     </el-button>
+                    <br />
                     <el-button
                         link
                         type="primary"
@@ -179,10 +188,35 @@
                     </el-button>
                 </template>
             </el-table-column>
+            <el-table-column fixed="right" label="播放" width="50">
+                <template #default="scope">
+                    <el-button
+                        type="primary"
+                        size="small"
+                        circle
+                        :disabled="!scope.row.video_info.transcoded"
+                        @click="handlePlay(scope.row)"
+                        >
+                        <!-- 播放icon -->
+                        <el-icon>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 1024 1024"
+                                data-v-ea893728=""
+                            >
+                                <path
+                                    fill="currentColor"
+                                    d="M384 192v640l384-320.064z"
+                                ></path>
+                            </svg>
+                        </el-icon>
+                    </el-button>
+                </template>
+            </el-table-column>
         </el-table>
 
         <!--Custom弹窗-->
-        <el-dialog v-model="showCustomDialog" width="30%" title="Custom">
+        <el-dialog v-model="showCustomDialog" :width="autoWidth(40)" title="Custom">
             人物：
             <el-input v-model="inputPeople" placeholder="人物" />
             标签：
@@ -194,7 +228,7 @@
             <el-button type="primary" @click="handleCustomSubmit">修改Custom</el-button>
         </el-dialog>
         <!--JSON弹窗-->
-        <el-dialog v-model="showJSONDialog" width="70%" title="JSON">
+        <el-dialog v-model="showJSONDialog" :width="autoWidth(60)" title="JSON">
             <el-input
                 v-model="JSONStr"
                 :autosize="{ minRows: 10, maxRows: 20 }"
@@ -303,6 +337,8 @@ export default {
             JSONStr: "",
             //页面高度
             windowHeight: window.innerHeight * 0.9 + "px",
+            // 是横屏设备还是竖屏设备，true表示横屏
+            isLandscapeDevice: true,
         };
     },
 
@@ -501,6 +537,10 @@ export default {
                 return "0" + num;
             } else return num.toString();
         },
+        autoWidth(percent) {
+            if (this.isLandscapeDevice) return percent + "%";
+            return "100%";
+        },
     },
 
     /*
@@ -509,6 +549,16 @@ export default {
     mounted() {
         this.getData();
         this.getProperty();
+        if (window.innerHeight > window.innerWidth) {
+            this.isLandscapeDevice = false;
+        }
+        window.addEventListener("resize", () => {
+            if (window.innerHeight > window.innerWidth) {
+                this.isLandscapeDevice = false;
+            } else {
+                this.isLandscapeDevice = true;
+            }
+        });
     },
 };
 </script>
