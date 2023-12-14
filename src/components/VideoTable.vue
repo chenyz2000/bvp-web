@@ -196,7 +196,7 @@
                         circle
                         :disabled="!scope.row.video_info.transcoded"
                         @click="handlePlay(scope.row)"
-                        >
+                    >
                         <!-- 播放icon -->
                         <el-icon>
                             <svg
@@ -249,6 +249,46 @@
             style="object-fit: contain"
             :src="videoUrl()"
         />
+        <!-- 播放列表 -->
+        <el-row>
+            <el-col :span="2">
+                <el-button type="primary" size="small" circle @click="true" />
+            </el-col>
+            <el-col v-for="row in tableData" :key="row" :span="2">
+                <el-card :body-style="{ padding: '0px' }">
+                    <el-button
+                        type="primary"
+                        size="small"
+                        circle
+                        :disabled="!row.video_info.transcoded"
+                        @click="handlePlay(row)"
+                    >
+                        <!-- 播放icon -->
+                        <el-icon>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 1024 1024"
+                                data-v-ea893728=""
+                            >
+                                <path
+                                    fill="currentColor"
+                                    d="M384 192v640l384-320.064z"
+                                ></path>
+                            </svg>
+                        </el-icon>
+                    </el-button>
+                    <el-image :src="row.video_info.cover" fit="contain" />
+                    <div style="padding: 0px">
+                        <el-text size="small">{{ row.video_info.title }}</el-text>
+                        ---------------
+                        <el-text size="small">{{ row.video_info.page_title }}</el-text>
+                    </div>
+                </el-card>
+            </el-col>
+            <el-col :span="2">
+                <el-button type="primary" size="small" circle @click="true" />
+            </el-col>
+        </el-row>
     </div>
 </template>
 
@@ -413,7 +453,7 @@ export default {
         },
         // 处理播放按钮
         handlePlay(v) {
-            this.playVideo = !this.playVideo;
+            this.playVideo = true;
             this.playVideoPath =
                 v.favor_name + "/" + v.item_name + "/" + v.page_name + "/";
             setTimeout(() => {
@@ -462,7 +502,7 @@ export default {
         },
         // 处理返回按钮
         handleReturnButton() {
-            this.playVideo = !this.playVideo;
+            this.playVideo = false;
             this.playVideoPath = "";
             const video = document.getElementById("video");
             video.pause();
