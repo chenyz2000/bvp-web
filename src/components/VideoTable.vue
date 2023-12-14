@@ -118,12 +118,6 @@
                 label="标题"
                 width="300"
             />
-            <el-table-column
-                :fixed="isLandscapeDevice"
-                prop="video_info.page_title"
-                label="分P"
-                width="200"
-            />
             <!-- 中间 -->
             <el-table-column label="封面" width="120">
                 <template #default="scope">
@@ -280,8 +274,6 @@
                     <el-image :src="row.video_info.cover" fit="contain" />
                     <div style="padding: 0px">
                         <el-text size="small">{{ row.video_info.title }}</el-text>
-                        ---------------
-                        <el-text size="small">{{ row.video_info.page_title }}</el-text>
                     </div>
                 </el-card>
             </el-col>
@@ -410,13 +402,16 @@ export default {
                         this.selectedDirection
                 )
                 .then((response) => {
+                    console.log(response);
                     var list = response.data.list.map((val) => {
+                        if (val.video_info.page_title != val.video_info.title && val.video_info.page_title!="") {
+                            val.video_info.title = val.video_info.title+"--"+val.video_info.page_title;
+                        }
                         val.video_info.cover = "cover/" + val.video_info.cover;
                         return val;
                     });
                     this.tableData = list;
                     this.videoNum = response.data.count;
-                    console.log(this.tableData);
                 });
         },
         // 获取Property
