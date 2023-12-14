@@ -3,6 +3,12 @@
     <div v-show="!playVideo">
         <!-- 对列表进行条件筛选 -->
         <div>
+            <el-input
+                v-model="inputKeywords"
+                style="width: 200px"
+                placeholder="关键词"
+                clearable
+            />
             <el-select
                 multiple
                 v-model="selectedFavor"
@@ -301,6 +307,7 @@ export default {
             curPage: 1, // 当前页
             pageSize: 10,
             // 选中的筛选条件，都是多选
+            inputKeywords: "",
             selectedFavor: [],
             selectedPeople: [],
             selectedTag: [],
@@ -390,6 +397,8 @@ export default {
                         this.curPage +
                         "&page_size=" +
                         this.pageSize +
+                        "&keywords=" +
+                        this.inputKeywords +
                         "&favor=" +
                         this.selectedFavor +
                         "&people=" +
@@ -404,8 +413,12 @@ export default {
                 .then((response) => {
                     console.log(response);
                     var list = response.data.list.map((val) => {
-                        if (val.video_info.page_title != val.video_info.title && val.video_info.page_title!="") {
-                            val.video_info.title = val.video_info.title+"--"+val.video_info.page_title;
+                        if (
+                            val.video_info.page_title != val.video_info.title &&
+                            val.video_info.page_title != ""
+                        ) {
+                            val.video_info.title =
+                                val.video_info.title + "--" + val.video_info.page_title;
                         }
                         val.video_info.cover = "cover/" + val.video_info.cover;
                         return val;
