@@ -117,19 +117,36 @@
         <el-button type="primary" @click="handleTranscode"> Transcode </el-button>
         <el-button type="primary" @click="openBatchDialog"> 批量修改</el-button>
         <el-dialog v-model="showBatchDialog" :width="autoWidth(40)" title="批量修改">
-            <el-input v-model="inputFavor" list="favorDataList" clearable placeholder="收藏夹" />
+            <el-input
+                v-model="inputFavor"
+                list="favorDataList"
+                clearable
+                placeholder="收藏夹"
+            />
             <el-button type="primary" @click="setFavor">修改收藏夹</el-button>
             <el-divider />
-            <el-input v-model="inputBatchPeople" clearable placeholder="人物（逗号分割）" />
-            <el-input v-model="inputBatchTag" clearable placeholder="标签（逗号分割）" />
+            <el-input
+                v-model="inputBatchPeople"
+                list="peopleDataList"
+                clearable
+                placeholder="人物（逗号分割）"
+            />
+            <el-input
+                v-model="inputBatchTag"
+                list="tagDataList"
+                clearable
+                placeholder="标签（逗号分割）"
+            />
             <el-button type="primary" @click="setCustom">修改人物、标签</el-button>
         </el-dialog>
-        <datalist
-            id="favorDataList"
-            v-for="(val, key) in property.favor"
-            :key="key"
-        >
-            <option :value="key" />
+        <datalist id="favorDataList">
+            <option v-for="(val, key) in property.favor" :key="key" :value="key" />
+        </datalist>
+        <datalist id="peopleDataList">
+            <option v-for="(val, key) in property.people" :key="key" :value="key" />
+        </datalist>
+        <datalist id="tagDataList">
+            <option v-for="(val, key) in property.tag" :key="key" :value="key" />
         </datalist>
 
         <!-- 表格 -->
