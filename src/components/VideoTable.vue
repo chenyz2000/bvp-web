@@ -114,6 +114,7 @@
         />
         <!--表格上方按钮-->
         <el-button type="primary" @click="handleRefresh"> Refresh </el-button>
+        <el-button type="primary" @click="handleTranscode"> Transcode </el-button>
         <el-button type="primary" @click="openBatchDialog"> 批量修改</el-button>
         <el-dialog v-model="showBatchDialog" :width="autoWidth(40)" title="批量修改">
             <el-input v-model="inputFavor" placeholder="收藏夹" />
@@ -474,6 +475,12 @@ export default {
             axios.get(this.rootUrl + "/api/refresh").then((response) => {
                 console.log(response);
                 this.getData();
+            });
+        },
+        // 处理Transcode
+        handleTranscode() {
+            axios.get(this.rootUrl + "/api/transcode").then((response) => {
+                alert(response.data);
             });
         },
         // 处理表格多选
