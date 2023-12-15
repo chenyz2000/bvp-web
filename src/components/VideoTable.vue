@@ -272,14 +272,18 @@
             loop
             width="100%"
             :height="windowHeight"
-            style="object-fit: contain"
             :src="videoUrl()"
+        />
+        <!-- 分页器 -->
+        <el-pagination
+            layout="prev, pager, next"
+            :page-size="pageSize"
+            :total="videoNum"
+            :current-page="curPage"
+            @current-change="handleCurrentPageChange"
         />
         <!-- 播放列表 -->
         <el-row>
-            <el-col :span="2">
-                <el-button type="primary" size="small" circle @click="true" />
-            </el-col>
             <el-col v-for="row in tableData" :key="row" :span="2">
                 <el-card :body-style="{ padding: '0px' }">
                     <el-button
@@ -303,14 +307,17 @@
                             </svg>
                         </el-icon>
                     </el-button>
-                    <el-image :src="row.video_info.cover[0]" fit="contain" />
+                    <div style="height:50px">
+                        <el-image
+                            :src="row.video_info.cover[0]"
+                            style="height:50px"
+                            :fit="contain"
+                        />
+                    </div>
                     <div style="padding: 0px">
                         <el-text size="small">{{ row.video_info.title }}</el-text>
                     </div>
                 </el-card>
-            </el-col>
-            <el-col :span="2">
-                <el-button type="primary" size="small" circle @click="true" />
             </el-col>
         </el-row>
     </div>
@@ -331,7 +338,7 @@ export default {
             // 分页器
             videoNum: 0, // 视频总量
             curPage: 1, // 当前页
-            pageSize: 10,
+            pageSize: 12,
             // 选中的筛选条件，都是多选
             inputKeywords: "",
             selectedTranscode: [],
