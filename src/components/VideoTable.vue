@@ -133,23 +133,29 @@
             stripe="true"
             @selection-change="handleTableSelection"
             :row-key="item_name"
-            :cell-style="{ padding: 0 + 'px' }"
         >
             <!-- 左侧固定 -->
-            <el-table-column :fixed="isLandscapeDevice" type="selection" width="40" />
+            <el-table-column :fixed="isLandscapeDevice" type="selection" width="25" />
             <el-table-column
                 :fixed="isLandscapeDevice"
                 prop="video_info.title"
                 label="标题"
-                width="300"
+                width="200"
             />
             <!-- 中间 -->
             <el-table-column label="封面" width="120">
                 <template #default="scope">
-                    <el-image :src="scope.row.video_info.cover" fit="contain" />
+                    <div class="block">
+                        <el-image
+                            :src="scope.row.video_info.cover[0]"
+                            :preview-src-list="scope.row.video_info.cover"
+                            preview-teleported="true"
+                            style="height: 72px"
+                        />
+                    </div>
                 </template>
             </el-table-column>
-            <el-table-column prop="video_info.owner_name" label="UP主" width="120" />
+            <el-table-column prop="video_info.owner_name" label="UP主" width="110" />
             <el-table-column prop="favor_name" label="收藏夹" width="80" />
             <el-table-column label="更新时间" width="100">
                 <template #default="scope">{{
@@ -175,7 +181,7 @@
             <el-table-column
                 :fixed="isLandscapeDevice ? 'right' : false"
                 label="操作"
-                width="75"
+                width="60"
             >
                 <template #default="scope">
                     <el-button
@@ -207,7 +213,7 @@
                     </el-button>
                 </template>
             </el-table-column>
-            <el-table-column fixed="right" label="播放" width="50">
+            <el-table-column fixed="right" label="播放" width="38">
                 <template #default="scope">
                     <el-button
                         type="primary"
@@ -261,6 +267,7 @@
         <el-button type="primary" @click="handleReturnButton"> 返回 </el-button>
         <video
             id="video"
+            autoplay
             controls
             loop
             width="100%"
@@ -296,7 +303,7 @@
                             </svg>
                         </el-icon>
                     </el-button>
-                    <el-image :src="row.video_info.cover" fit="contain" />
+                    <el-image :src="row.video_info.cover[0]" fit="contain" />
                     <div style="padding: 0px">
                         <el-text size="small">{{ row.video_info.title }}</el-text>
                     </div>
@@ -443,7 +450,7 @@ export default {
                             val.video_info.title =
                                 val.video_info.title + "--" + val.video_info.page_title;
                         }
-                        val.video_info.cover = "cover/" + val.video_info.cover;
+                        val.video_info.cover = ["cover/" + val.video_info.cover];
                         return val;
                     });
                     this.tableData = list;
@@ -639,3 +646,15 @@ export default {
     },
 };
 </script>
+<style scoped>
+/deep/ .block {
+    height: 72px;
+    text-align: center;
+}
+/deep/ .el-table .cell {
+    padding: 0 6px;
+}
+/deep/ .el-table .el-table__cell {
+    padding: 0 0;
+}
+</style>
