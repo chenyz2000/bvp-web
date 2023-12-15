@@ -11,6 +11,24 @@
             />
             <el-select
                 multiple
+                v-model="selectedTranscode"
+                style="width: 200px"
+                collapse-tags
+                placeholder="可播放"
+            >
+                <el-option
+                    v-for="(val, key) in property.transcode"
+                    :value="key"
+                    :key="key"
+                >
+                    <span style="float：left">{{ key }}</span>
+                    <span style="float: right; color: var(--el-text-color-secondary)">{{
+                        val
+                    }}</span>
+                </el-option>
+            </el-select>
+            <el-select
+                multiple
                 v-model="selectedFavor"
                 style="width: 200px"
                 collapse-tags
@@ -308,6 +326,7 @@ export default {
             pageSize: 10,
             // 选中的筛选条件，都是多选
             inputKeywords: "",
+            selectedTranscode: [],
             selectedFavor: [],
             selectedPeople: [],
             selectedTag: [],
@@ -355,6 +374,7 @@ export default {
                 tag: {},
                 clarity: {},
                 direction: {},
+                transcode: {},
             },
             // 播放视频
             playVideo: false,
@@ -399,6 +419,8 @@ export default {
                         this.pageSize +
                         "&keywords=" +
                         this.inputKeywords +
+                        "&transcode=" +
+                        this.selectedTranscode +
                         "&favor=" +
                         this.selectedFavor +
                         "&people=" +
