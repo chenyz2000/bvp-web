@@ -5,31 +5,13 @@
         <div>
             <el-input
                 v-model="inputKeywords"
-                style="width: 200px"
+                style="width: 160px"
                 placeholder="关键词"
                 clearable
             />
             <el-select
                 multiple
-                v-model="selectedTranscode"
-                style="width: 200px"
-                collapse-tags
-                placeholder="可播放"
-            >
-                <el-option
-                    v-for="(val, key) in property.transcode"
-                    :value="key"
-                    :key="key"
-                >
-                    <span style="float：left">{{ key }}</span>
-                    <span style="float: right; color: var(--el-text-color-secondary)">{{
-                        val
-                    }}</span>
-                </el-option>
-            </el-select>
-            <el-select
-                multiple
-                v-model="selectedFavor"
+                v-model="selectedFavorList"
                 style="width: 200px"
                 collapse-tags
                 placeholder="收藏夹"
@@ -42,8 +24,26 @@
                 </el-option>
             </el-select>
             <el-select
+                v-model="selectedDirection"
+                style="width: 160px"
+                collapse-tags
+                placeholder="方向(单选)"
+                clearable
+            >
+                <el-option
+                    v-for="(val, key) in property.direction"
+                    :value="key"
+                    :key="key"
+                >
+                    <span style="float：left">{{ key }}</span>
+                    <span style="float: right; color: var(--el-text-color-secondary)">{{
+                        val
+                    }}</span>
+                </el-option>
+            </el-select>
+            <el-select
                 multiple
-                v-model="selectedPeople"
+                v-model="selectedPeopleList"
                 style="width: 200px"
                 collapse-tags
                 placeholder="人物"
@@ -55,10 +55,12 @@
                     }}</span>
                 </el-option>
             </el-select>
+            <br />
+
             <el-select
                 multiple
-                v-model="selectedTag"
-                style="width: 200px"
+                v-model="selectedTagList"
+                style="width: 160px"
                 collapse-tags
                 placeholder="标签"
             >
@@ -71,8 +73,8 @@
             </el-select>
             <el-select
                 multiple
-                v-model="selectedClarity"
-                style="width: 200px"
+                v-model="selectedClarityList"
+                style="width: 160px"
                 collapse-tags
                 placeholder="清晰度"
             >
@@ -84,14 +86,13 @@
                 </el-option>
             </el-select>
             <el-select
-                multiple
-                v-model="selectedDirection"
-                style="width: 200px"
+                v-model="selectedTranscode"
+                style="width: 160px"
                 collapse-tags
-                placeholder="方向"
+                placeholder="可播放(单选)"
             >
                 <el-option
-                    v-for="(val, key) in property.direction"
+                    v-for="(val, key) in property.transcode"
                     :value="key"
                     :key="key"
                 >
@@ -363,16 +364,16 @@ export default {
             videoNum: 0, // 视频总量
             curPage: 1, // 当前页
             pageSize: 12,
-            // 选中的筛选条件，都是多选
+            // 以下列表的变量表示多选
             inputKeywords: "",
-            selectedTranscode: [],
-            selectedFavor: [],
-            selectedPeople: [],
-            selectedTag: [],
-            selectedClarity: [],
-            selectedDirection: [],
+            selectedTranscode: "",
+            selectedFavorList: [],
+            selectedPeopleList: [],
+            selectedTagList: [],
+            selectedClarityList: [],
+            selectedDirection: "",
             // 表格选中的行
-            selectedRow: [],
+            selectedRowList: [],
             // 表格
             tableData: [
                 {
@@ -449,6 +450,7 @@ export default {
         */
         // 获取列表数据
         getData() {
+            console.log(this.selectedDirection);
             axios
                 .get(
                     this.rootUrl +
@@ -458,18 +460,18 @@ export default {
                         this.pageSize +
                         "&keywords=" +
                         this.inputKeywords +
-                        "&transcode=" +
-                        this.selectedTranscode +
                         "&favor=" +
-                        this.selectedFavor +
-                        "&people=" +
-                        this.selectedPeople +
-                        "&tag=" +
-                        this.selectedTag +
-                        "&clarity=" +
-                        this.selectedClarity +
+                        this.selectedFavorList +
                         "&direction=" +
-                        this.selectedDirection
+                        this.selectedDirection +
+                        "&people=" +
+                        this.selectedPeopleList +
+                        "&tag=" +
+                        this.selectedTagList +
+                        "&clarity=" +
+                        this.selectedClarityList +
+                        "&transcode=" +
+                        this.selectedTranscode
                 )
                 .then((response) => {
                     console.log(response);
@@ -522,8 +524,8 @@ export default {
         },
         // 处理表格多选
         handleTableSelection(val) {
-            this.selectedRow = val;
-            console.log(this.selectedRow);
+            this.selectedRowList = val;
+            console.log(this.selectedRowList);
         },
         // 处理播放按钮
         handlePlay(v) {
@@ -588,8 +590,8 @@ export default {
         // 批量修改收藏夹
         setFavor() {
             var videoNameList = [];
-            for (var i = 0; i < this.selectedRow.length; i++) {
-                var row = this.selectedRow[i];
+            for (var i = 0; i < this.selectedRowList.length; i++) {
+                var row = this.selectedRowList[i];
                 videoNameList.push(row.item_name + ";" + row.page_name);
             }
             console.log(videoNameList);
@@ -607,8 +609,8 @@ export default {
         // 批量修改人物和标签
         setCustom() {
             var videoNameList = [];
-            for (var i = 0; i < this.selectedRow.length; i++) {
-                var row = this.selectedRow[i];
+            for (var i = 0; i < this.selectedRowList.length; i++) {
+                var row = this.selectedRowList[i];
                 videoNameList.push(row.item_name + ";" + row.page_name);
             }
             console.log(videoNameList);
