@@ -60,6 +60,21 @@
                     }}</span>
                 </el-option>
             </el-select>
+            <el-select
+                v-model="selectedSort"
+                style="width: 160px"
+                collapse-tags
+                placeholder="排序"
+                @change="getData"
+                clearable
+            >
+                <el-option
+                    v-for="(val, key) in sortMappings"
+                    :value="val.value"
+                    :label="val.label"
+                    :key="key"
+                />
+            </el-select>
             <br />
 
             <!-- 折叠条件 -->
@@ -368,7 +383,10 @@
         <!-- 播放列表 -->
         <el-row>
             <el-col v-for="row in tableData" :key="row" :span="cardSpan">
-                <el-card :body-style="{ padding: '0px' }" style="height:150px;overflow:auto">
+                <el-card
+                    :body-style="{ padding: '0px' }"
+                    style="height: 150px; overflow: auto"
+                >
                     <el-button
                         type="primary"
                         size="small"
@@ -417,13 +435,14 @@ export default {
         // create生命周期后才实例化
         return {
             // 部署前需要修改！！！
-            rootUrl: "http://localhost:1024",   // 请求的根路径
+            rootUrl: "http://localhost:1024", // 请求的根路径
             ffmpegOutputName: "intact.mp4",
             // 分页器
             videoNum: 0, // 视频总量
             curPage: 1, // 当前页
             pageSize: 12,
             // 以下列表的变量表示多选
+            selectedSort: -1,
             inputKeywords: "",
             selectedFavorList: [],
             selectedDirection: "",
@@ -438,6 +457,13 @@ export default {
             tableData: [],
             // 属性
             property: {},
+            // 排序映射
+            sortMappings: [
+                { label: "更新时间倒序", value: -1 },
+                { label: "星级倒序", value: -4 },
+                { label: "更新时间顺序", value: 1 },
+                { label: "星级顺序", value: 4 },
+            ],
             // 播放视频
             playVideo: false,
             playVideoPath: "",
@@ -483,6 +509,8 @@ export default {
                         this.curPage +
                         "&page_size=" +
                         this.pageSize +
+                        "&sort=" +
+                        this.selectedSort +
                         "&keywords=" +
                         this.inputKeywords +
                         "&favor=" +
@@ -534,6 +562,7 @@ export default {
         },
         // 处理重置
         handleReset() {
+            this.selectedSort = -1;
             this.inputKeywords = "";
             this.selectedFavorList = [];
             this.selectedDirection = "";
