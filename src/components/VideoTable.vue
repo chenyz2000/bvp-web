@@ -92,6 +92,17 @@
                 </el-option>
             </el-select>
             <el-select
+                v-model="selectedPeopleMarked"
+                style="width: 160px"
+                collapse-tags
+                placeholder="已标注People(单选)"
+                clearable
+                @change="getData"
+            >
+                <el-option label="未标注" value="未标注" />
+                <el-option label="已标注" value="已标注" />
+            </el-select>
+            <el-select
                 v-model="selectedTranscode"
                 style="width: 160px"
                 collapse-tags
@@ -379,6 +390,7 @@ export default {
             selectedPeopleList: [],
             selectedTagList: [],
             selectedClarityList: [],
+            selectedPeopleMarked: "",
             selectedTranscode: "",
             // 表格选中的行
             selectedRowList: [],
@@ -458,7 +470,6 @@ export default {
         */
         // 获取列表数据
         getData() {
-            console.log(this.selectedDirection);
             axios
                 .get(
                     this.rootUrl +
@@ -478,6 +489,8 @@ export default {
                         this.selectedTagList +
                         "&clarity=" +
                         this.selectedClarityList +
+                        "&people_marked=" +
+                        this.selectedPeopleMarked +
                         "&transcode=" +
                         this.selectedTranscode
                 )
