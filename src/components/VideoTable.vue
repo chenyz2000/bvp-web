@@ -3,6 +3,7 @@
     <div v-show="!playVideo">
         <!-- 对列表进行条件筛选 -->
         <div>
+            <!-- 常显条件 -->
             <el-input
                 v-model="inputKeywords"
                 style="width: 160px"
@@ -61,66 +62,91 @@
             </el-select>
             <br />
 
-            <el-select
-                multiple
-                v-model="selectedTagList"
-                style="width: 160px"
-                collapse-tags
-                placeholder="标签"
-                @change="getData"
-            >
-                <el-option v-for="(val, key) in property.tag" :value="key" :key="key">
-                    <span style="float：left">{{ key }}</span>
-                    <span style="float: right; color: var(--el-text-color-secondary)">{{
-                        val
-                    }}</span>
-                </el-option>
-            </el-select>
-            <el-select
-                multiple
-                v-model="selectedClarityList"
-                style="width: 160px"
-                collapse-tags
-                placeholder="清晰度"
-                @change="getData"
-            >
-                <el-option v-for="(val, key) in property.clarity" :value="key" :key="key">
-                    <span style="float：left">{{ key }}</span>
-                    <span style="float: right; color: var(--el-text-color-secondary)">{{
-                        val
-                    }}</span>
-                </el-option>
-            </el-select>
-            <el-select
-                v-model="selectedPeopleMarked"
-                style="width: 160px"
-                collapse-tags
-                placeholder="已标注People(单选)"
-                clearable
-                @change="getData"
-            >
-                <el-option label="未标注" value="未标注" />
-                <el-option label="已标注" value="已标注" />
-            </el-select>
-            <el-select
-                v-model="selectedTranscode"
-                style="width: 160px"
-                collapse-tags
-                placeholder="可播放(单选)"
-                clearable
-                @change="getData"
-            >
-                <el-option
-                    v-for="(val, key) in property.transcode"
-                    :value="key"
-                    :key="key"
-                >
-                    <span style="float：left">{{ key }}</span>
-                    <span style="float: right; color: var(--el-text-color-secondary)">{{
-                        val
-                    }}</span>
-                </el-option>
-            </el-select>
+            <!-- 折叠条件 -->
+            <el-collapse v-model="activeFilterList">
+                <el-collapse-item title="其他条件" name="1">
+                    <el-select
+                        multiple
+                        v-model="selectedTagList"
+                        style="width: 160px"
+                        collapse-tags
+                        placeholder="标签"
+                        @change="getData"
+                    >
+                        <el-option
+                            v-for="(val, key) in property.tag"
+                            :value="key"
+                            :key="key"
+                        >
+                            <span style="float：left">{{ key }}</span>
+                            <span
+                                style="
+                                    float: right;
+                                    color: var(--el-text-color-secondary);
+                                "
+                                >{{ val }}</span
+                            >
+                        </el-option>
+                    </el-select>
+                    <el-select
+                        multiple
+                        v-model="selectedClarityList"
+                        style="width: 160px"
+                        collapse-tags
+                        placeholder="清晰度"
+                        @change="getData"
+                    >
+                        <el-option
+                            v-for="(val, key) in property.clarity"
+                            :value="key"
+                            :key="key"
+                        >
+                            <span style="float：left">{{ key }}</span>
+                            <span
+                                style="
+                                    float: right;
+                                    color: var(--el-text-color-secondary);
+                                "
+                                >{{ val }}</span
+                            >
+                        </el-option>
+                    </el-select>
+                    <el-select
+                        v-model="selectedPeopleMarked"
+                        style="width: 160px"
+                        collapse-tags
+                        placeholder="已标注People(单选)"
+                        clearable
+                        @change="getData"
+                    >
+                        <el-option label="未标注" value="未标注" />
+                        <el-option label="已标注" value="已标注" />
+                    </el-select>
+                    <el-select
+                        v-model="selectedTranscode"
+                        style="width: 160px"
+                        collapse-tags
+                        placeholder="可播放(单选)"
+                        clearable
+                        @change="getData"
+                    >
+                        <el-option
+                            v-for="(val, key) in property.transcode"
+                            :value="key"
+                            :key="key"
+                        >
+                            <span style="float：left">{{ key }}</span>
+                            <span
+                                style="
+                                    float: right;
+                                    color: var(--el-text-color-secondary);
+                                "
+                                >{{ val }}</span
+                            >
+                        </el-option>
+                    </el-select>
+                </el-collapse-item>
+            </el-collapse>
             <el-button type="primary" @click="handleSearch"> 搜索 </el-button>
         </div>
 
@@ -458,6 +484,8 @@ export default {
             windowHeight: window.innerHeight * 0.9 + "px",
             // 是横屏设备还是竖屏设备，true表示横屏
             isLandscapeDevice: true,
+            // 折叠面板
+            activeFilterList: [],
         };
     },
 
@@ -716,5 +744,11 @@ export default {
 }
 /deep/ .el-table .el-table__cell {
     padding: 0 0;
+}
+/deep/ .el-collapse{
+    --el-collapse-header-height: 20px;
+}
+/deep/ .el-collapse-item__content{
+    padding-bottom: 6px;
 }
 </style>
