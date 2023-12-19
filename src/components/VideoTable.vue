@@ -8,6 +8,7 @@
                 style="width: 160px"
                 placeholder="关键词"
                 clearable
+                @change="getData"
             />
             <el-select
                 multiple
@@ -15,6 +16,7 @@
                 style="width: 200px"
                 collapse-tags
                 placeholder="收藏夹"
+                @change="getData"
             >
                 <el-option v-for="(val, key) in property.favor" :value="key" :key="key">
                     <span style="float：left">{{ key }}</span>
@@ -29,6 +31,7 @@
                 collapse-tags
                 placeholder="方向(单选)"
                 clearable
+                @change="getData"
             >
                 <el-option
                     v-for="(val, key) in property.direction"
@@ -47,6 +50,7 @@
                 style="width: 200px"
                 collapse-tags
                 placeholder="人物"
+                @change="getData"
             >
                 <el-option v-for="(val, key) in property.people" :value="key" :key="key">
                     <span style="float：left">{{ key }}</span>
@@ -63,6 +67,7 @@
                 style="width: 160px"
                 collapse-tags
                 placeholder="标签"
+                @change="getData"
             >
                 <el-option v-for="(val, key) in property.tag" :value="key" :key="key">
                     <span style="float：left">{{ key }}</span>
@@ -77,6 +82,7 @@
                 style="width: 160px"
                 collapse-tags
                 placeholder="清晰度"
+                @change="getData"
             >
                 <el-option v-for="(val, key) in property.clarity" :value="key" :key="key">
                     <span style="float：left">{{ key }}</span>
@@ -90,6 +96,8 @@
                 style="width: 160px"
                 collapse-tags
                 placeholder="可播放(单选)"
+                clearable
+                @change="getData"
             >
                 <el-option
                     v-for="(val, key) in property.transcode"
@@ -366,12 +374,12 @@ export default {
             pageSize: 12,
             // 以下列表的变量表示多选
             inputKeywords: "",
-            selectedTranscode: "",
             selectedFavorList: [],
+            selectedDirection: "",
             selectedPeopleList: [],
             selectedTagList: [],
             selectedClarityList: [],
-            selectedDirection: "",
+            selectedTranscode: "",
             // 表格选中的行
             selectedRowList: [],
             // 表格
