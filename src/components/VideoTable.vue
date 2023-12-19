@@ -367,8 +367,8 @@
         />
         <!-- 播放列表 -->
         <el-row>
-            <el-col v-for="row in tableData" :key="row" :span="2">
-                <el-card :body-style="{ padding: '0px' }">
+            <el-col v-for="row in tableData" :key="row" :span="cardSpan">
+                <el-card :body-style="{ padding: '0px' }" style="height:150px;overflow:auto">
                     <el-button
                         type="primary"
                         size="small"
@@ -416,8 +416,9 @@ export default {
     data() {
         // create生命周期后才实例化
         return {
-            // 请求的根路径
-            rootUrl: "http://localhost:1024",
+            // 部署前需要修改！！！
+            rootUrl: "http://localhost:1024",   // 请求的根路径
+            ffmpegOutputName: "intact.mp4",
             // 分页器
             videoNum: 0, // 视频总量
             curPage: 1, // 当前页
@@ -434,11 +435,9 @@ export default {
             // 表格选中的行
             selectedRowList: [],
             // 表格
-            tableData: [
-            ],
+            tableData: [],
             // 属性
-            property: {
-            },
+            property: {},
             // 播放视频
             playVideo: false,
             playVideoPath: "",
@@ -461,6 +460,8 @@ export default {
             windowHeight: window.innerHeight * 0.9 + "px",
             // 是横屏设备还是竖屏设备，true表示横屏
             isLandscapeDevice: true,
+            // 播放列表card的span
+            cardSpan: 2,
             // 折叠面板
             activeFilterList: [],
         };
@@ -679,7 +680,7 @@ export default {
             if (this.playVideoPath == "") {
                 return "";
             }
-            return this.rootUrl + "/video/" + this.playVideoPath + "out.mp4";
+            return this.rootUrl + "/video/" + this.playVideoPath + this.ffmpegOutputName;
         },
         // 时间戳转日期
         timestamp2date(timestamp) {
@@ -712,12 +713,15 @@ export default {
         this.getProperty();
         if (window.innerHeight > window.innerWidth) {
             this.isLandscapeDevice = false;
+            this.cardSpan = 4;
         }
         window.addEventListener("resize", () => {
             if (window.innerHeight > window.innerWidth) {
                 this.isLandscapeDevice = false;
+                this.cardSpan = 4;
             } else {
                 this.isLandscapeDevice = true;
+                this.cardSpan = 2;
             }
         });
     },
