@@ -147,17 +147,20 @@
                     </el-select>
                 </el-collapse-item>
             </el-collapse>
+            <el-button type="primary" @click="handleReset"> 清空 </el-button>
             <el-button type="primary" @click="handleSearch"> 搜索 </el-button>
         </div>
 
         <!-- 分页器 -->
+        <!-- layout还可以加sizes, jumper -->
         <el-pagination
-            layout="prev, pager, next"
+            layout="prev, pager, next, total"
             :page-size="pageSize"
             :total="videoNum"
             :current-page="curPage"
             @current-change="handleCurrentPageChange"
         />
+
         <!--表格上方按钮-->
         <el-button type="primary" @click="handleRefresh"> Refresh </el-button>
         <el-button type="primary" @click="handleTranscode"> Transcode </el-button>
@@ -205,7 +208,7 @@
             :row-key="item_name"
         >
             <!-- 左侧固定 -->
-            <el-table-column :fixed="isLandscapeDevice" type="selection" width="25" />
+            <el-table-column type="selection" width="25" />
             <el-table-column
                 :fixed="isLandscapeDevice"
                 prop="video_info.total_title"
@@ -225,17 +228,27 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column prop="video_info.owner_name" label="UP主" width="110" />
-            <el-table-column prop="favor_name" label="收藏夹" width="80" />
-            <el-table-column label="更新时间" width="100">
-                <template #default="scope">{{
-                    timestamp2date(scope.row.video_info.update_time)
-                }}</template>
-            </el-table-column>
             <el-table-column label="人物" width="80">
                 <template #default="scope">{{
                     scope.row.video_info.custom_info.people.join(",")
                 }}</template>
+            </el-table-column>
+            <el-table-column prop="favor_name" label="收藏夹" width="70" />
+            <el-table-column prop="video_info.owner_name" label="UP主" width="100" />
+            <el-table-column label="更新时间" width="85">
+                <template #default="scope">{{
+                    timestamp2date(scope.row.video_info.update_time)
+                }}</template>
+            </el-table-column>
+            <el-table-column label="星级" width="30">
+                <template #default="scope">
+                    <img
+                        v-for="i in scope.row.video_info.custom_info.star_level"
+                        src="star.png"
+                        width="15px"
+                        height="15px"
+                        :key="i"
+                /></template>
             </el-table-column>
             <el-table-column label="标签" width="80">
                 <template #default="scope">{{
@@ -346,7 +359,7 @@
         />
         <!-- 分页器 -->
         <el-pagination
-            layout="prev, pager, next"
+            layout="prev, pager, next, total"
             :page-size="pageSize"
             :total="videoNum"
             :current-page="curPage"
@@ -422,45 +435,9 @@ export default {
             selectedRowList: [],
             // 表格
             tableData: [
-                {
-                    favor_name: "",
-                    item_name: "",
-                    page_name: "",
-                    video_info: {
-                        title: "",
-                        page_title: "",
-                        type: "",
-                        owner_id: 0,
-                        owner_name: "",
-                        cover: "",
-                        update_time: 0,
-                        direction: "",
-                        size: 0,
-                        length: 0,
-                        quality: "",
-                        height: 0,
-                        width: 0,
-                        fps: 0.0,
-                        bvid: "",
-                        avid: 0,
-                        custom_info: {
-                            people: [],
-                            tag: [],
-                            description: "",
-                            star_level: 0,
-                            colletion_time: 0,
-                        },
-                    },
-                },
             ],
             // 属性
             property: {
-                favor: {},
-                people: {},
-                tag: {},
-                clarity: {},
-                direction: {},
-                transcode: {},
             },
             // 播放视频
             playVideo: false,
@@ -554,7 +531,19 @@ export default {
             this.getData();
             console.log(this.curPage);
         },
-        // 处理Favor筛选框
+        // 处理重置
+        handleReset() {
+            this.inputKeywords = "";
+            this.selectedFavorList = [];
+            this.selectedDirection = "";
+            this.selectedPeopleList = [];
+            this.selectedTagList = [];
+            this.selectedClarityList = [];
+            this.selectedPeopleMarked = "";
+            this.selectedTranscode = "";
+            this.getData();
+        },
+        // 处理搜索
         handleSearch() {
             this.getData();
         },
@@ -735,20 +724,20 @@ export default {
 };
 </script>
 <style scoped>
-/deep/ .block {
+:deep(.block) {
     height: 72px;
     text-align: center;
 }
-/deep/ .el-table .cell {
+:deep(.el-table .cell) {
     padding: 0 6px;
 }
-/deep/ .el-table .el-table__cell {
+:deep(.el-table .el-table__cell) {
     padding: 0 0;
 }
-/deep/ .el-collapse{
+:deep(.el-collapse) {
     --el-collapse-header-height: 20px;
 }
-/deep/ .el-collapse-item__content{
+:deep(.el-collapse-item__content) {
     padding-bottom: 6px;
 }
 </style>
