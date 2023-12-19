@@ -162,7 +162,7 @@
             <el-table-column :fixed="isLandscapeDevice" type="selection" width="25" />
             <el-table-column
                 :fixed="isLandscapeDevice"
-                prop="video_info.title"
+                prop="video_info.total_title"
                 label="标题"
                 width="200"
             />
@@ -171,8 +171,8 @@
                 <template #default="scope">
                     <div class="block">
                         <el-image
-                            :src="scope.row.video_info.cover[0]"
-                            :preview-src-list="scope.row.video_info.cover"
+                            :src="coverUrl(scope.row.video_info.cover)"
+                            :preview-src-list="[coverUrl(scope.row.video_info.cover)]"
                             preview-teleported="true"
                             style="height: 72px"
                         />
@@ -333,13 +333,13 @@
                     </el-button>
                     <div style="height: 50px">
                         <el-image
-                            :src="row.video_info.cover[0]"
+                            :src="coverUrl(row.video_info.cover)"
                             style="height: 50px"
                             :fit="contain"
                         />
                     </div>
                     <div style="padding: 0px">
-                        <el-text size="small">{{ row.video_info.title }}</el-text>
+                        <el-text size="small">{{ row.video_info.total_title }}</el-text>
                     </div>
                 </el-card>
             </el-col>
@@ -478,10 +478,9 @@ export default {
                             val.video_info.page_title != val.video_info.title &&
                             val.video_info.page_title != ""
                         ) {
-                            val.video_info.title =
+                            val.video_info.total_title =
                                 val.video_info.title + "--" + val.video_info.page_title;
-                        }
-                        val.video_info.cover = ["cover/" + val.video_info.cover];
+                        } else val.video_info.total_title = val.video_info.title;
                         return val;
                     });
                     this.tableData = list;
@@ -628,12 +627,19 @@ export default {
         /*
           工具Util
         */
+        // 封面url转换
+        coverUrl(cover) {
+            if (cover == "") {
+                return "";
+            }
+            return this.rootUrl + "/cover/" + cover;
+        },
         // 视频url转换
         videoUrl() {
             if (this.playVideoPath == "") {
                 return "";
             }
-            return require("../../../assets/video/" + this.playVideoPath + "out.mp4");
+            return this.rootUrl + "/video/" + this.playVideoPath + "out.mp4";
         },
         // 时间戳转日期
         timestamp2date(timestamp) {
