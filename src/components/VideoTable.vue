@@ -270,11 +270,7 @@
                     scope.row.video_info.custom_info.tag.join(",")
                 }}</template>
             </el-table-column>
-            <el-table-column label="描述">
-                <template #default="scope">{{
-                    scope.row.video_info.custom_info.description
-                }}</template>
-            </el-table-column>
+            <el-table-column prop="video_info.custom_info.description" label="描述" />
             <!-- 右侧固定 -->
             <el-table-column
                 :fixed="isLandscapeDevice ? 'right' : false"
@@ -349,14 +345,39 @@
 
         <!--Custom弹窗-->
         <el-dialog v-model="showCustomDialog" :width="autoWidth(40)" title="Custom">
-            人物：
-            <el-input v-model="inputPeople" clearable placeholder="人物" />
-            标签：
-            <el-input v-model="inputTag" clearable placeholder="标签" />
-            描述：
-            <el-input v-model="inputDescription" clearable placeholder="描述" />
-            星级：
-            <el-input-number v-model="inputStarLevel" :min="0" :max="3" />
+            <el-row>
+                <el-col :span="4">人物：</el-col>
+                <el-col :span="20">
+                    <el-input v-model="inputPeople" clearable placeholder="人物" />
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="4">标签：</el-col>
+                <el-col :span="20">
+                    <el-input v-model="inputTag" clearable placeholder="标签" />
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="4">描述：</el-col>
+                <el-col :span="20">
+                    <el-input v-model="inputDescription" clearable placeholder="描述" />
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="4">星级：</el-col>
+                <el-col :span="20">
+                    <el-input-number v-model="inputStarLevel" :min="0" :max="3" />
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="4">need_h264：</el-col>
+                <el-col :span="20">
+                    <el-select v-model="need_h264" placeholder="need_h264">
+                        <el-option :value="false" label="false" />
+                        <el-option :value="true" label="true" />
+                    </el-select>
+                </el-col>
+            </el-row>
             <el-button type="primary" @click="handleCustomSubmit">修改Custom</el-button>
         </el-dialog>
         <!--JSON弹窗-->
@@ -392,10 +413,7 @@
         <!-- 播放列表 -->
         <el-row>
             <el-col v-for="row in tableData" :key="row" :span="cardSpan">
-                <el-card
-                    :body-style="{ padding: '0px' }"
-                    style="height: 150px"
-                >
+                <el-card :body-style="{ padding: '0px' }" style="height: 150px">
                     <el-button
                         type="primary"
                         size="small"
@@ -470,9 +488,10 @@ export default {
             // 排序映射
             sortMappings: [
                 { label: "更新时间倒序", value: -1 },
-                { label: "星级倒序", value: -4 },
                 { label: "更新时间顺序", value: 1 },
-                { label: "星级顺序", value: 4 },
+                { label: "星级倒序", value: -3 },
+                { label: "标题顺序", value: 4 },
+                { label: "UP主顺序", value: 5 },
             ],
             // 播放视频
             playVideo: false,
@@ -489,6 +508,7 @@ export default {
             inputTag: "",
             inputDescription: "",
             inputStarLevel: 0,
+            need_h264: false,
             // JSON弹窗
             showJSONDialog: false,
             JSONStr: "",
@@ -622,6 +642,7 @@ export default {
             this.inputTag = row.video_info.custom_info.tag.join(",");
             this.inputDescription = row.video_info.custom_info.description;
             this.inputStarLevel = row.video_info.custom_info.star_level;
+            this.need_h264 = row.video_info.custom_info.need_h264;
             this.customVideoName = row.item_name + ";" + row.page_name;
         },
         // 处理Custom弹窗中的确认按钮
@@ -634,6 +655,7 @@ export default {
                         tag: this.inputTag.split(","),
                         description: this.inputDescription,
                         star_level: this.inputStarLevel,
+                        need_h264: this.need_h264,
                     },
                 })
                 .then(() => {
