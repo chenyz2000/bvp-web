@@ -6,7 +6,7 @@
             <!-- 常显条件 -->
             <el-input
                 v-model="inputKeywords"
-                style="width: 160px"
+                style="width: 150px"
                 placeholder="关键词"
                 clearable
                 @change="getData"
@@ -14,7 +14,7 @@
             <el-select
                 multiple
                 v-model="selectedFavorList"
-                style="width: 200px"
+                style="width: 150px"
                 collapse-tags
                 placeholder="收藏夹"
                 @change="getData"
@@ -28,7 +28,7 @@
             </el-select>
             <el-select
                 v-model="selectedDirection"
-                style="width: 160px"
+                style="width: 150px"
                 collapse-tags
                 placeholder="方向(单选)"
                 clearable
@@ -48,7 +48,7 @@
             <el-select
                 multiple
                 v-model="selectedPeopleList"
-                style="width: 200px"
+                style="width: 150px"
                 collapse-tags
                 placeholder="人物"
                 @change="getData"
@@ -62,7 +62,7 @@
             </el-select>
             <el-select
                 v-model="selectedSort"
-                style="width: 160px"
+                style="width: 150px"
                 collapse-tags
                 placeholder="排序"
                 @change="getData"
@@ -83,7 +83,7 @@
                     <el-select
                         multiple
                         v-model="selectedTagList"
-                        style="width: 160px"
+                        style="width: 150px"
                         collapse-tags
                         placeholder="标签"
                         @change="getData"
@@ -106,7 +106,7 @@
                     <el-select
                         multiple
                         v-model="selectedClarityList"
-                        style="width: 160px"
+                        style="width: 150px"
                         collapse-tags
                         placeholder="清晰度"
                         @change="getData"
@@ -128,7 +128,7 @@
                     </el-select>
                     <el-select
                         v-model="selectedPeopleMarked"
-                        style="width: 160px"
+                        style="width: 150px"
                         collapse-tags
                         placeholder="已标注People(单选)"
                         clearable
@@ -139,7 +139,7 @@
                     </el-select>
                     <el-select
                         v-model="selectedTranscode"
-                        style="width: 160px"
+                        style="width: 150px"
                         collapse-tags
                         placeholder="可播放(单选)"
                         clearable
@@ -166,7 +166,7 @@
             <el-button type="primary" @click="handleSearch"> 搜索 </el-button>
         </div>
 
-        <!-- 分页器 -->
+        <!-- 表格上方分页器 -->
         <!-- layout还可以加sizes, jumper -->
         <el-pagination
             layout="prev, pager, next, total"
@@ -338,6 +338,15 @@
             </el-table-column>
         </el-table>
 
+        <!-- 表格下方分页器 -->
+        <el-pagination
+            layout="prev, pager, next, total"
+            :page-size="pageSize"
+            :total="videoNum"
+            :current-page="curPage"
+            @current-change="handleCurrentPageChange"
+        />
+
         <!--Custom弹窗-->
         <el-dialog v-model="showCustomDialog" :width="autoWidth(40)" title="Custom">
             人物：
@@ -385,7 +394,7 @@
             <el-col v-for="row in tableData" :key="row" :span="cardSpan">
                 <el-card
                     :body-style="{ padding: '0px' }"
-                    style="height: 150px; overflow: auto"
+                    style="height: 150px"
                 >
                     <el-button
                         type="primary"
@@ -436,6 +445,7 @@ export default {
         return {
             // 部署前需要修改！！！
             rootUrl: "http://localhost:1024", // 请求的根路径
+            // rootUrl: "http://192.168.31.100:1024", // 请求的根路径
             ffmpegOutputName: "intact.mp4",
             // 分页器
             videoNum: 0, // 视频总量
