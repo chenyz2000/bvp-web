@@ -493,7 +493,7 @@ export default {
             showJSONDialog: false,
             JSONStr: "",
             //页面高度
-            windowHeight: window.innerHeight * 0.9 + "px",
+            windowHeight: window.innerHeight + "px",
             // 是横屏设备还是竖屏设备，true表示横屏
             isLandscapeDevice: true,
             // 播放列表card的span
@@ -782,5 +782,8 @@ export default {
 }
 :deep(.el-collapse-item__content) {
     padding-bottom: 6px;
+}
+:deep(.el-pagination) {
+    --el-pagination-button-width: 24px;
 }
 </style>
