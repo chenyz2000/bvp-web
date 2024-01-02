@@ -9,7 +9,7 @@
                 style="width: 150px"
                 placeholder="关键词"
                 clearable
-                @change="getData"
+                @change="handleChangeFilter"
             />
             <el-select
                 multiple
@@ -17,7 +17,7 @@
                 style="width: 150px"
                 collapse-tags
                 placeholder="收藏夹"
-                @change="getData"
+                @change="handleChangeFilter"
             >
                 <el-option v-for="(val, key) in property.favor" :value="key" :key="key">
                     <span style="float：left">{{ key }}</span>
@@ -32,7 +32,7 @@
                 collapse-tags
                 placeholder="方向(单选)"
                 clearable
-                @change="getData"
+                @change="handleChangeFilter"
             >
                 <el-option
                     v-for="(val, key) in property.direction"
@@ -51,7 +51,7 @@
                 style="width: 150px"
                 collapse-tags
                 placeholder="人物"
-                @change="getData"
+                @change="handleChangeFilter"
             >
                 <el-option v-for="(val, key) in property.people" :value="key" :key="key">
                     <span style="float：left">{{ key }}</span>
@@ -65,7 +65,7 @@
                 style="width: 150px"
                 collapse-tags
                 placeholder="排序"
-                @change="getData"
+                @change="handleChangeFilter"
                 clearable
             >
                 <el-option
@@ -86,7 +86,7 @@
                         style="width: 150px"
                         collapse-tags
                         placeholder="标签"
-                        @change="getData"
+                        @change="handleChangeFilter"
                     >
                         <el-option
                             v-for="(val, key) in property.tag"
@@ -109,7 +109,7 @@
                         style="width: 150px"
                         collapse-tags
                         placeholder="清晰度"
-                        @change="getData"
+                        @change="handleChangeFilter"
                     >
                         <el-option
                             v-for="(val, key) in property.clarity"
@@ -132,7 +132,7 @@
                         collapse-tags
                         placeholder="已标注People(单选)"
                         clearable
-                        @change="getData"
+                        @change="handleChangeFilter"
                     >
                         <el-option label="未标注" value="未标注" />
                         <el-option label="已标注" value="已标注" />
@@ -143,7 +143,7 @@
                         collapse-tags
                         placeholder="可播放(单选)"
                         clearable
-                        @change="getData"
+                        @change="handleChangeFilter"
                     >
                         <el-option
                             v-for="(val, key) in property.transcode"
@@ -163,7 +163,7 @@
                 </el-collapse-item>
             </el-collapse>
             <el-button type="primary" @click="handleReset"> 清空 </el-button>
-            <el-button type="primary" @click="handleSearch"> 搜索 </el-button>
+            <el-button type="primary" @click="handleChangeFilter"> 搜索 </el-button>
         </div>
 
         <!-- 表格上方分页器 -->
@@ -601,14 +601,16 @@ export default {
             this.selectedTranscode = "";
             this.getData();
         },
-        // 处理搜索
-        handleSearch() {
+        // 处理修改筛选条件
+        handleChangeFilter() {
+            this.curPage=1;
             this.getData();
         },
         // 处理Refresh
         handleRefresh() {
             axios.get(this.rootUrl + "/api/refresh").then((response) => {
                 console.log(response);
+                this.curPage=1;
                 this.getData();
             });
         },
