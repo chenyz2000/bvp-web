@@ -461,8 +461,8 @@ export default {
     data() {
         // create生命周期后才实例化
         return {
-            rootUrl: process.env.VUE_APP_ROOT_URL, // 请求的根路径
-            ffmpegOutputName: "intact.mp4",
+            // 请求的根路径
+            rootUrl: process.env.VUE_APP_ROOT_URL,
             // 分页器
             videoNum: 0, // 视频总量
             curPage: 1, // 当前页
@@ -493,7 +493,7 @@ export default {
             ],
             // 播放视频
             playVideo: false,
-            playVideoPath: "",
+            playVideoKey: "",
             // 收藏夹弹窗
             showBatchDialog: false,
             inputFavor: "",
@@ -626,8 +626,7 @@ export default {
         // 处理播放按钮
         handlePlay(v) {
             this.playVideo = true;
-            this.playVideoPath =
-                v.favor_name + "/" + v.item_name + "/" + v.page_name + "/";
+            this.playVideoKey = v.item_name + ";" + v.page_name;
             setTimeout(() => {
                 const video = document.getElementById("video");
                 video.play();
@@ -677,7 +676,7 @@ export default {
         // 处理返回按钮
         handleReturnButton() {
             this.playVideo = false;
-            this.playVideoPath = "";
+            this.playVideoKey = "";
             const video = document.getElementById("video");
             video.pause();
         },
@@ -736,10 +735,10 @@ export default {
         },
         // 视频url转换
         videoUrl() {
-            if (this.playVideoPath == "") {
+            if (this.playVideoKey == "") {
                 return "";
             }
-            return this.rootUrl + "/video/" + this.playVideoPath + this.ffmpegOutputName;
+            return this.rootUrl + "/video/" + this.playVideoKey + ".mp4";
         },
         // 时间戳转日期
         timestamp2date(timestamp) {
@@ -768,7 +767,7 @@ export default {
         挂载时
     */
     mounted() {
-        console.log("rootUrl", this.rootUrl)
+        console.log("rootUrl", this.rootUrl);
         this.getData();
         this.getProperty();
         if (window.innerHeight > window.innerWidth) {
