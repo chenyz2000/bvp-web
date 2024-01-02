@@ -461,9 +461,7 @@ export default {
     data() {
         // create生命周期后才实例化
         return {
-            // 部署前需要修改！！！
-            rootUrl: "http://localhost:1024", // 请求的根路径
-            // rootUrl: "http://192.168.31.100:1024", // 请求的根路径
+            rootUrl: process.env.VUE_APP_ROOT_URL, // 请求的根路径
             ffmpegOutputName: "intact.mp4",
             // 分页器
             videoNum: 0, // 视频总量
@@ -770,6 +768,7 @@ export default {
         挂载时
     */
     mounted() {
+        console.log("rootUrl", this.rootUrl)
         this.getData();
         this.getProperty();
         if (window.innerHeight > window.innerWidth) {
