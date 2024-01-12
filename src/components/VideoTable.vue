@@ -138,15 +138,15 @@
                         <el-option label="已标注" value="已标注" />
                     </el-select>
                     <el-select
-                        v-model="selectedTranscode"
+                        v-model="selectedVcodec"
                         style="width: 150px"
                         collapse-tags
-                        placeholder="可播放(单选)"
+                        placeholder="视频编码(单选)"
                         clearable
                         @change="handleChangeFilter"
                     >
                         <el-option
-                            v-for="(val, key) in property.transcode"
+                            v-for="(val, key) in property.vcodec"
                             :value="key"
                             :key="key"
                         >
@@ -313,7 +313,6 @@
                         type="primary"
                         size="small"
                         circle
-                        :disabled="!scope.row.video_info.transcoded"
                         @click="handlePlay(scope.row)"
                     >
                         <!-- 播放icon -->
@@ -418,7 +417,6 @@
                         type="primary"
                         size="small"
                         circle
-                        :disabled="!row.video_info.transcoded"
                         @click="handlePlay(row)"
                     >
                         <!-- 播放icon -->
@@ -476,7 +474,7 @@ export default {
             selectedTagList: [],
             selectedClarityList: [],
             selectedPeopleMarked: "",
-            selectedTranscode: "",
+            selectedVcodec: "",
             // 表格选中的行
             selectedRowList: [],
             // 表格
@@ -552,9 +550,9 @@ export default {
                         "&clarity=" +
                         this.selectedClarityList +
                         "&people_marked=" +
-                        this.selectedPeopleMarked +
-                        "&transcode=" +
-                        this.selectedTranscode
+                        this.selectedPeopleMarked+
+                        "&vcodec="+
+                        this.selectedVcodec
                 )
                 .then((response) => {
                     console.log(response);
@@ -598,7 +596,6 @@ export default {
             this.selectedTagList = [];
             this.selectedClarityList = [];
             this.selectedPeopleMarked = "";
-            this.selectedTranscode = "";
             this.getData();
         },
         // 处理修改筛选条件
