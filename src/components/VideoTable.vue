@@ -170,7 +170,7 @@
 
         <!--表格上方按钮-->
         <el-button type="primary" @click="handleRefresh"> Refresh </el-button>
-        <el-button type="primary" @click="handleTranscode"> Transcode </el-button>
+        <el-button type="primary" @click="handleAutoMap"> AutoMap </el-button>
         <el-button type="primary" @click="openBatchDialog"> 批量修改</el-button>
         <el-dialog v-model="showBatchDialog" :width="autoWidth(40)" title="批量修改">
             <el-input
@@ -372,12 +372,18 @@
             <el-button type="primary" @click="handleCustomSubmit">修改Custom</el-button>
         </el-dialog>
         <!--JSON弹窗-->
-        <el-dialog v-model="showJSONDialog" :width="autoWidth(60)" title="JSON">
+        <el-dialog v-model="showJSONDialog" :width="autoWidth(60)" :title="JsonType">
             <el-input
                 v-model="JSONStr"
                 :autosize="{ minRows: 10, maxRows: 20 }"
                 type="textarea"
             />
+            <el-button
+                type="primary"
+                @click="handleAutoMapSubmit"
+                v-show="JsonType == 'automap'"
+                >修改automap</el-button
+            >
         </el-dialog>
     </div>
 
@@ -499,6 +505,7 @@ export default {
             inputStarLevel: 0,
             need_h264: false,
             // JSON弹窗
+            JsonType: "",
             showJSONDialog: false,
             JSONStr: "",
             //页面高度
@@ -605,14 +612,37 @@ export default {
             axios.get(this.rootUrl + "/api/refresh").then((response) => {
                 console.log(response);
                 this.curPage = 1;
+                ElMessage({
+                    message: "refresh完毕",
+                    type: "success",
+                });
                 this.getData();
+                this.getProperty();
             });
         },
-        // 处理Transcode
-        handleTranscode() {
-            axios.get(this.rootUrl + "/api/transcode").then((response) => {
-                alert(response.data);
+        // // 处理Transcode
+        // handleTranscode() {
+        //     axios.get(this.rootUrl + "/api/transcode").then((response) => {
+        //         alert(response.data);
+        //     });
+        // },
+        // 处理AutoMap
+        handleAutoMap() {
+            this.JsonType = "automap";
+            this.showJSONDialog = true;
+            axios.get(this.rootUrl + "/api/get-automap").then((response) => {
+                this.JSONStr = response.data;
             });
+        },
+        // 处理修改AutoMap按钮
+        handleAutoMapSubmit() {
+            axios
+                .put(this.rootUrl + "/api/update-automap", {
+                    json_str: this.JSONStr,
+                })
+                .then(() => {
+                    this.showJSONDialog = false;
+                });
         },
         // 处理表格多选
         handleTableSelection(val) {
@@ -667,6 +697,7 @@ export default {
         },
         // 处理JSON按钮
         handleJSON(row) {
+            this.JsonType = "data";
             this.showJSONDialog = true;
             this.JSONStr = JSON.stringify(row, null, "    ");
         },
