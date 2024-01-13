@@ -61,6 +61,21 @@
                 </el-option>
             </el-select>
             <el-select
+                multiple
+                v-model="selectedTagList"
+                style="width: 150px"
+                collapse-tags
+                placeholder="标签"
+                @change="handleChangeFilter"
+            >
+                <el-option v-for="(val, key) in property.tag" :value="key" :key="key">
+                    <span style="float：left">{{ key }}</span>
+                    <span style="float: right; color: var(--el-text-color-secondary)">{{
+                        val
+                    }}</span>
+                </el-option>
+            </el-select>
+            <el-select
                 v-model="selectedSort"
                 style="width: 150px"
                 collapse-tags
@@ -80,29 +95,6 @@
             <!-- 折叠条件 -->
             <el-collapse v-model="activeFilterList">
                 <el-collapse-item title="其他条件" name="1">
-                    <el-select
-                        multiple
-                        v-model="selectedTagList"
-                        style="width: 150px"
-                        collapse-tags
-                        placeholder="标签"
-                        @change="handleChangeFilter"
-                    >
-                        <el-option
-                            v-for="(val, key) in property.tag"
-                            :value="key"
-                            :key="key"
-                        >
-                            <span style="float：left">{{ key }}</span>
-                            <span
-                                style="
-                                    float: right;
-                                    color: var(--el-text-color-secondary);
-                                "
-                                >{{ val }}</span
-                            >
-                        </el-option>
-                    </el-select>
                     <el-select
                         multiple
                         v-model="selectedClarityList"
@@ -220,10 +212,10 @@
             border="true"
             stripe="true"
             @selection-change="handleTableSelection"
-            :row-key="(row)=>row.item_name"
+            :row-key="(row) => row.item_name"
         >
             <!-- 左侧固定 -->
-            <el-table-column type="selection" width="25" :reserve-selection="true"/>
+            <el-table-column type="selection" width="25" :reserve-selection="true" />
             <el-table-column
                 :fixed="isLandscapeDevice"
                 prop="video_info.total_title"
@@ -648,12 +640,20 @@ export default {
         },
         // 处理Custom弹窗中的确认按钮
         handleCustomSubmit() {
+            var people_list = [];
+            if (this.inputPeople != "") {
+                people_list = this.inputPeople.split(",");
+            }
+            var tag_list = [];
+            if (this.inputTag != "") {
+                tag_list = this.inputTag.split(",");
+            }
             axios
                 .put(this.rootUrl + "/api/video/update-custom", {
                     video_name: this.customVideoName,
                     custom_info: {
-                        people: this.inputPeople.split(","),
-                        tag: this.inputTag.split(","),
+                        people: people_list,
+                        tag: tag_list,
                         description: this.inputDescription,
                         star_level: this.inputStarLevel,
                         need_h264: this.need_h264,
