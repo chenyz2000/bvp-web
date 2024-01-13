@@ -220,10 +220,10 @@
             border="true"
             stripe="true"
             @selection-change="handleTableSelection"
-            :row-key="item_name"
+            :row-key="(row)=>row.item_name"
         >
             <!-- 左侧固定 -->
-            <el-table-column type="selection" width="25" />
+            <el-table-column type="selection" width="25" :reserve-selection="true"/>
             <el-table-column
                 :fixed="isLandscapeDevice"
                 prop="video_info.total_title"
@@ -451,6 +451,7 @@
 
 <script>
 import axios from "axios";
+import { ElMessage } from "element-plus";
 
 export default {
     /*
@@ -550,8 +551,8 @@ export default {
                         "&clarity=" +
                         this.selectedClarityList +
                         "&people_marked=" +
-                        this.selectedPeopleMarked+
-                        "&vcodec="+
+                        this.selectedPeopleMarked +
+                        "&vcodec=" +
                         this.selectedVcodec
                 )
                 .then((response) => {
@@ -600,14 +601,18 @@ export default {
         },
         // 处理修改筛选条件
         handleChangeFilter() {
-            this.curPage=1;
+            this.curPage = 1;
             this.getData();
         },
         // 处理Refresh
         handleRefresh() {
+            ElMessage({
+                message: "已开始refresh，完成后列表将自动刷新",
+                type: "success",
+            });
             axios.get(this.rootUrl + "/api/refresh").then((response) => {
                 console.log(response);
-                this.curPage=1;
+                this.curPage = 1;
                 this.getData();
             });
         },
