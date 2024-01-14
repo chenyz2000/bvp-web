@@ -207,6 +207,7 @@
 
         <!-- 表格 -->
         <el-table
+            ref="table"
             :data="tableData"
             style="width: 100%; height: 100%"
             border="true"
@@ -242,7 +243,7 @@
             </el-table-column>
             <el-table-column prop="favor_name" label="收藏夹" width="70" />
             <el-table-column prop="video_info.owner_name" label="UP主" width="100" />
-            <el-table-column label="更新时间" width="85">
+            <el-table-column label="下载时间" width="85">
                 <template #default="scope">{{
                     timestamp2date(scope.row.video_info.update_time)
                 }}</template>
@@ -339,13 +340,23 @@
             <el-row>
                 <el-col :span="4">人物：</el-col>
                 <el-col :span="20">
-                    <el-input v-model="inputPeople" clearable placeholder="人物" />
+                    <el-input
+                        v-model="inputPeople"
+                        list="peopleDataList"
+                        clearable
+                        placeholder="人物"
+                    />
                 </el-col>
             </el-row>
             <el-row>
                 <el-col :span="4">标签：</el-col>
                 <el-col :span="20">
-                    <el-input v-model="inputTag" clearable placeholder="标签" />
+                    <el-input
+                        v-model="inputTag"
+                        list="tagDataList"
+                        clearable
+                        placeholder="标签"
+                    />
                 </el-col>
             </el-row>
             <el-row>
@@ -482,8 +493,8 @@ export default {
             property: {},
             // 排序映射
             sortMappings: [
-                { label: "更新时间倒序", value: -1 },
-                { label: "更新时间顺序", value: 1 },
+                { label: "下载时间倒序", value: -1 },
+                { label: "下载时间顺序", value: 1 },
                 { label: "星级倒序", value: -3 },
                 { label: "标题顺序", value: 4 },
                 { label: "UP主顺序", value: 5 },
@@ -596,6 +607,7 @@ export default {
             this.selectedTagList = [];
             this.selectedClarityList = [];
             this.selectedPeopleMarked = "";
+            this.selectedVcodec = "";
             this.getData();
         },
         // 处理修改筛选条件
@@ -734,6 +746,8 @@ export default {
                 })
                 .then(() => {
                     this.showBatchDialog = false;
+                    this.$refs.table.clearSelection();
+                    this.selectedRowList = [];
                     this.getData();
                     this.getProperty();
                 });
@@ -754,6 +768,8 @@ export default {
                 })
                 .then(() => {
                     this.showBatchDialog = false;
+                    this.$refs.table.clearSelection();
+                    this.selectedRowList = [];
                     this.getData();
                     this.getProperty();
                 });
@@ -779,7 +795,7 @@ export default {
         timestamp2date(timestamp) {
             var date = new Date(timestamp);
             var Y = this.dateInt2string(date.getFullYear());
-            var M = this.dateInt2string(date.getMonth());
+            var M = this.dateInt2string(date.getMonth() + 1);
             var D = this.dateInt2string(date.getDate());
             var h = this.dateInt2string(date.getHours());
             var m = this.dateInt2string(date.getMinutes());
