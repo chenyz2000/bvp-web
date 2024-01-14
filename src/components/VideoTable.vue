@@ -400,7 +400,6 @@
 
     <!-- 视频播放 -->
     <div v-show="playVideo" :span="24">
-        <el-button type="primary" @click="handleReturnButton"> 返回 </el-button>
         <video
             id="video"
             autoplay
@@ -410,6 +409,9 @@
             :height="windowHeight"
             :src="videoUrl()"
         />
+        <el-button type="primary" @click="handleNextButton(-1)"> 上一个 </el-button>
+        <el-button type="primary" @click="handleReturnButton"> 返回 </el-button>
+        <el-button type="primary" @click="handleNextButton(1)"> 下一个 </el-button>
         <!-- 分页器 -->
         <el-pagination
             layout="prev, pager, next, total"
@@ -726,6 +728,22 @@ export default {
             this.playVideoKey = "";
             const video = document.getElementById("video");
             video.pause();
+        },
+        // 处理播放上一个、下一个按钮
+        handleNextButton(val){
+            var index = 0;
+            for (var i =0;i<this.tableData.length;i++){
+                var row = this.tableData[i];
+                var key = row.item_name + ";" + row.page_name;
+                if (this.playVideoKey==key){
+                    index = i;
+                    break;
+                }
+            }
+            if(index+val>=0&&index+val<this.pageSize){
+                index = index + val;
+            }
+            this.handlePlay(this.tableData[index]);
         },
         // 打开批量修改对话框
         openBatchDialog() {
