@@ -405,58 +405,60 @@
             autoplay
             controls
             loop
-            width="100%"
-            :height="windowHeight"
             :src="videoUrl()"
         />
-        <el-button type="primary" @click="handleNextButton(-1)"> 上一个 </el-button>
-        <el-button type="primary" @click="handleReturnButton"> 返回 </el-button>
-        <el-button type="primary" @click="handleNextButton(1)"> 下一个 </el-button>
-        <!-- 分页器 -->
-        <el-pagination
-            layout="prev, pager, next, total"
-            :page-size="pageSize"
-            :total="videoNum"
-            :current-page="curPage"
-            @current-change="handleCurrentPageChange"
-        />
-        <!-- 播放列表 -->
-        <el-row>
-            <el-col v-for="row in tableData" :key="row" :span="cardSpan">
-                <el-card :body-style="{ padding: '0px' }" style="height: 150px">
-                    <el-button
-                        type="primary"
-                        size="small"
-                        circle
-                        @click="handlePlay(row)"
-                    >
-                        <!-- 播放icon -->
-                        <el-icon>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 1024 1024"
-                                data-v-ea893728=""
-                            >
-                                <path
-                                    fill="currentColor"
-                                    d="M384 192v640l384-320.064z"
-                                ></path>
-                            </svg>
-                        </el-icon>
-                    </el-button>
-                    <div style="height: 50px">
-                        <el-image
-                            :src="coverUrl(row.video_info.cover)"
-                            style="height: 50px"
-                            :fit="contain"
-                        />
-                    </div>
-                    <div style="padding: 0px">
-                        <el-text size="small">{{ row.video_info.total_title }}</el-text>
-                    </div>
-                </el-card>
-            </el-col>
-        </el-row>
+        <div :style="'position:absolute; top:' + windowHeight">
+            <el-button type="primary" @click="handleNextButton(-1)"> 上一个 </el-button>
+            <el-button type="primary" @click="handleReturnButton"> 返回 </el-button>
+            <el-button type="primary" @click="handleNextButton(1)"> 下一个 </el-button>
+            <!-- 分页器 -->
+            <el-pagination
+                layout="prev, pager, next, total"
+                :page-size="pageSize"
+                :total="videoNum"
+                :current-page="curPage"
+                @current-change="handleCurrentPageChange"
+            />
+            <!-- 播放列表 -->
+            <el-row>
+                <el-col v-for="row in tableData" :key="row" :span="cardSpan">
+                    <el-card :body-style="{ padding: '0px' }" style="height: 150px">
+                        <el-button
+                            type="primary"
+                            size="small"
+                            circle
+                            @click="handlePlay(row)"
+                        >
+                            <!-- 播放icon -->
+                            <el-icon>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 1024 1024"
+                                    data-v-ea893728=""
+                                >
+                                    <path
+                                        fill="currentColor"
+                                        d="M384 192v640l384-320.064z"
+                                    ></path>
+                                </svg>
+                            </el-icon>
+                        </el-button>
+                        <div style="height: 50px">
+                            <el-image
+                                :src="coverUrl(row.video_info.cover)"
+                                style="height: 50px"
+                                :fit="contain"
+                            />
+                        </div>
+                        <div style="padding: 0px">
+                            <el-text size="small">{{
+                                row.video_info.total_title
+                            }}</el-text>
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </div>
     </div>
 </template>
 
@@ -523,6 +525,7 @@ export default {
             JSONStr: "",
             //页面高度
             windowHeight: window.innerHeight + "px",
+            windowWidth: window.innerWidth + "px",
             // 是横屏设备还是竖屏设备，true表示横屏
             isLandscapeDevice: true,
             // 播放列表card的span
@@ -667,8 +670,13 @@ export default {
         handlePlay(v) {
             this.playVideo = true;
             this.playVideoKey = v.item_name + ";" + v.page_name;
+            const video = document.getElementById("video");
+            if (!this.isLandscapeDevice && v.video_info.direction == "horizontal") {
+                video.style = `width:${this.windowHeight}; height:${this.windowWidth}; transform:rotate(90deg); transform-origin:0 0; position:absolute; left:${this.windowWidth}`;
+            } else {
+                video.style = `width:${this.windowWidth}; height:${this.windowHeight}`;
+            }
             setTimeout(() => {
-                const video = document.getElementById("video");
                 video.play();
             }, 500);
         },
@@ -730,17 +738,17 @@ export default {
             video.pause();
         },
         // 处理播放上一个、下一个按钮
-        handleNextButton(val){
+        handleNextButton(val) {
             var index = 0;
-            for (var i =0;i<this.tableData.length;i++){
+            for (var i = 0; i < this.tableData.length; i++) {
                 var row = this.tableData[i];
                 var key = row.item_name + ";" + row.page_name;
-                if (this.playVideoKey==key){
+                if (this.playVideoKey == key) {
                     index = i;
                     break;
                 }
             }
-            if(index+val>=0&&index+val<this.pageSize){
+            if (index + val >= 0 && index + val < this.pageSize) {
                 index = index + val;
             }
             this.handlePlay(this.tableData[index]);
@@ -844,6 +852,8 @@ export default {
             this.cardSpan = 4;
         }
         window.addEventListener("resize", () => {
+            this.windowHeight = window.innerHeight + "px";
+            this.windowWidth = window.innerWidth + "px";
             if (window.innerHeight > window.innerWidth) {
                 this.isLandscapeDevice = false;
                 this.cardSpan = 4;
