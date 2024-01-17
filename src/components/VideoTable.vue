@@ -400,14 +400,8 @@
 
     <!-- 视频播放 -->
     <div v-show="playVideo" :span="24">
-        <video
-            id="video"
-            autoplay
-            controls
-            loop
-            :src="videoUrl()"
-        />
-        <div :style="'position:absolute; top:' + windowHeight">
+        <video id="video" autoplay controls loop :src="videoUrl()" />
+        <div id="underVideo">
             <el-button type="primary" @click="handleNextButton(-1)"> 上一个 </el-button>
             <el-button type="primary" @click="handleReturnButton"> 返回 </el-button>
             <el-button type="primary" @click="handleNextButton(1)"> 下一个 </el-button>
@@ -671,11 +665,13 @@ export default {
             this.playVideo = true;
             this.playVideoKey = v.item_name + ";" + v.page_name;
             const video = document.getElementById("video");
+            const underVideo = document.getElementById("underVideo");
             if (!this.isLandscapeDevice && v.video_info.direction == "horizontal") {
                 video.style = `width:${this.windowHeight}; height:${this.windowWidth}; transform:rotate(90deg); transform-origin:0 0; position:absolute; left:${this.windowWidth}`;
             } else {
                 video.style = `width:${this.windowWidth}; height:${this.windowHeight}`;
             }
+            underVideo.style = `position:absolute; top:${this.windowHeight}`;
             setTimeout(() => {
                 video.play();
             }, 500);
