@@ -19,10 +19,14 @@
                 placeholder="收藏夹"
                 @change="handleChangeFilter"
             >
-                <el-option v-for="(val, key) in property.favor" :value="key" :key="key">
-                    <span style="float：left">{{ key }}</span>
+                <el-option
+                    v-for="item in property.favor"
+                    :value="item.name"
+                    :key="item.name"
+                >
+                    <span style="float：left">{{ item.name }}</span>
                     <span style="float: right; color: var(--el-text-color-secondary)">{{
-                        val
+                        item.count
                     }}</span>
                 </el-option>
             </el-select>
@@ -35,13 +39,13 @@
                 @change="handleChangeFilter"
             >
                 <el-option
-                    v-for="(val, key) in property.direction"
-                    :value="key"
-                    :key="key"
+                    v-for="item in property.direction"
+                    :value="item.name"
+                    :key="item.name"
                 >
-                    <span style="float：left">{{ key }}</span>
+                    <span style="float：left">{{ item.name }}</span>
                     <span style="float: right; color: var(--el-text-color-secondary)">{{
-                        val
+                        item.count
                     }}</span>
                 </el-option>
             </el-select>
@@ -53,10 +57,14 @@
                 placeholder="人物"
                 @change="handleChangeFilter"
             >
-                <el-option v-for="(val, key) in property.people" :value="key" :key="key">
-                    <span style="float：left">{{ key }}</span>
+                <el-option
+                    v-for="item in property.people"
+                    :value="item.name"
+                    :key="item.name"
+                >
+                    <span style="float：left">{{ item.name }}</span>
                     <span style="float: right; color: var(--el-text-color-secondary)">{{
-                        val
+                        item.count
                     }}</span>
                 </el-option>
             </el-select>
@@ -68,10 +76,14 @@
                 placeholder="标签"
                 @change="handleChangeFilter"
             >
-                <el-option v-for="(val, key) in property.tag" :value="key" :key="key">
-                    <span style="float：left">{{ key }}</span>
+                <el-option
+                    v-for="item in property.tag"
+                    :value="item.name"
+                    :key="item.name"
+                >
+                    <span style="float：left">{{ item.name }}</span>
                     <span style="float: right; color: var(--el-text-color-secondary)">{{
-                        val
+                        item.count
                     }}</span>
                 </el-option>
             </el-select>
@@ -104,17 +116,17 @@
                         @change="handleChangeFilter"
                     >
                         <el-option
-                            v-for="(val, key) in property.clarity"
-                            :value="key"
-                            :key="key"
+                            v-for="item in property.clarity"
+                            :value="item.name"
+                            :key="item.name"
                         >
-                            <span style="float：left">{{ key }}</span>
+                            <span style="float：left">{{ item.name }}</span>
                             <span
                                 style="
                                     float: right;
                                     color: var(--el-text-color-secondary);
                                 "
-                                >{{ val }}</span
+                                >{{ item.count }}</span
                             >
                         </el-option>
                     </el-select>
@@ -138,17 +150,17 @@
                         @change="handleChangeFilter"
                     >
                         <el-option
-                            v-for="(val, key) in property.vcodec"
-                            :value="key"
-                            :key="key"
+                            v-for="item in property.vcodec"
+                            :value="item.name"
+                            :key="item.name"
                         >
-                            <span style="float：left">{{ key }}</span>
+                            <span style="float：left">{{ item.name }}</span>
                             <span
                                 style="
                                     float: right;
                                     color: var(--el-text-color-secondary);
                                 "
-                                >{{ val }}</span
+                                >{{ item.count }}</span
                             >
                         </el-option>
                     </el-select>
@@ -196,13 +208,13 @@
             <el-button type="primary" @click="setCustom">修改人物、标签</el-button>
         </el-dialog>
         <datalist id="favorDataList">
-            <option v-for="(val, key) in property.favor" :key="key" :value="key" />
+            <option v-for="item in property.favor" :key="item.name" :value="item.name" />
         </datalist>
         <datalist id="peopleDataList">
-            <option v-for="(val, key) in property.people" :key="key" :value="key" />
+            <option v-for="item in property.people" :key="item.name" :value="item.name" />
         </datalist>
         <datalist id="tagDataList">
-            <option v-for="(val, key) in property.tag" :key="key" :value="key" />
+            <option v-for="item in property.tag" :key="item.name" :value="item.name" />
         </datalist>
 
         <!-- 表格 -->
