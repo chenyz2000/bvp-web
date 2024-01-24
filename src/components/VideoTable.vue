@@ -131,17 +131,6 @@
                         </el-option>
                     </el-select>
                     <el-select
-                        v-model="selectedPeopleMarked"
-                        style="width: 150px"
-                        collapse-tags
-                        placeholder="已标注People(单选)"
-                        clearable
-                        @change="handleChangeFilter"
-                    >
-                        <el-option label="未标注" value="未标注" />
-                        <el-option label="已标注" value="已标注" />
-                    </el-select>
-                    <el-select
                         v-model="selectedVcodec"
                         style="width: 150px"
                         collapse-tags
@@ -493,7 +482,6 @@ export default {
             selectedPeopleList: [],
             selectedTagList: [],
             selectedClarityList: [],
-            selectedPeopleMarked: "",
             selectedVcodec: "",
             // 表格选中的行
             selectedRowList: [],
@@ -571,8 +559,6 @@ export default {
                         this.selectedTagList +
                         "&clarity=" +
                         this.selectedClarityList +
-                        "&people_marked=" +
-                        this.selectedPeopleMarked +
                         "&vcodec=" +
                         this.selectedVcodec
                 )
@@ -617,7 +603,6 @@ export default {
             this.selectedPeopleList = [];
             this.selectedTagList = [];
             this.selectedClarityList = [];
-            this.selectedPeopleMarked = "";
             this.selectedVcodec = "";
             this.getData();
         },
