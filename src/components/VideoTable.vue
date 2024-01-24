@@ -109,6 +109,75 @@
                 <el-collapse-item title="其他条件" name="1">
                     <el-select
                         multiple
+                        v-model="selectedExcludeFavorList"
+                        style="width: 150px"
+                        collapse-tags
+                        placeholder="排除收藏夹"
+                        @change="handleChangeFilter"
+                    >
+                        <el-option
+                            v-for="item in property.favor"
+                            :value="item.name"
+                            :key="item.name"
+                        >
+                            <span style="float：left">{{ item.name }}</span>
+                            <span
+                                style="
+                                    float: right;
+                                    color: var(--el-text-color-secondary);
+                                "
+                                >{{ item.count }}</span
+                            >
+                        </el-option>
+                    </el-select>
+                    <el-select
+                        multiple
+                        v-model="selectedExcludePeopleList"
+                        style="width: 150px"
+                        collapse-tags
+                        placeholder="排除人物"
+                        @change="handleChangeFilter"
+                    >
+                        <el-option
+                            v-for="item in property.people"
+                            :value="item.name"
+                            :key="item.name"
+                        >
+                            <span style="float：left">{{ item.name }}</span>
+                            <span
+                                style="
+                                    float: right;
+                                    color: var(--el-text-color-secondary);
+                                "
+                                >{{ item.count }}</span
+                            >
+                        </el-option>
+                    </el-select>
+                    <el-select
+                        multiple
+                        v-model="selectedExcludeTagList"
+                        style="width: 150px"
+                        collapse-tags
+                        placeholder="排除标签"
+                        @change="handleChangeFilter"
+                    >
+                        <el-option
+                            v-for="item in property.tag"
+                            :value="item.name"
+                            :key="item.name"
+                        >
+                            <span style="float：left">{{ item.name }}</span>
+                            <span
+                                style="
+                                    float: right;
+                                    color: var(--el-text-color-secondary);
+                                "
+                                >{{ item.count }}</span
+                            >
+                        </el-option>
+                    </el-select>
+                    <el-select
+                        multiple
                         v-model="selectedClarityList"
                         style="width: 150px"
                         collapse-tags
@@ -483,6 +552,9 @@ export default {
             selectedTagList: [],
             selectedClarityList: [],
             selectedVcodec: "",
+            selectedExcludeFavorList: [],
+            selectedExcludePeopleList: [],
+            selectedExcludeTagList: [],
             // 表格选中的行
             selectedRowList: [],
             // 表格
@@ -557,6 +629,12 @@ export default {
                         this.selectedPeopleList +
                         "&tag=" +
                         this.selectedTagList +
+                        "&exclude_favor=" +
+                        this.selectedExcludeFavorList +
+                        "&exclude_people=" +
+                        this.selectedExcludePeopleList +
+                        "&exclude_tag=" +
+                        this.selectedExcludeTagList +
                         "&clarity=" +
                         this.selectedClarityList +
                         "&vcodec=" +
@@ -574,7 +652,10 @@ export default {
                         } else val.video_info.total_title = val.video_info.title;
                         return val;
                     });
+                    console.log("!!!!!")
+                    console.log(list)
                     this.tableData = list;
+                    console.log(this.tableData)
                     this.videoNum = response.data.count;
                 });
         },
@@ -602,6 +683,9 @@ export default {
             this.selectedDirection = "";
             this.selectedPeopleList = [];
             this.selectedTagList = [];
+            this.selectedExcludeFavorList = [];
+            this.selectedExcludePeopleList = [];
+            this.selectedExcludeTagList = [];
             this.selectedClarityList = [];
             this.selectedVcodec = "";
             this.getData();
