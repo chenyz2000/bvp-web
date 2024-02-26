@@ -333,6 +333,11 @@
                     scope.row.video_info.custom_info.tag.join(",")
                 }}</template>
             </el-table-column>
+            <el-table-column label="时长" width="40">
+                <template #default="scope">{{
+                    this.duration2string(scope.row.video_info.duration)
+                }}</template>
+            </el-table-column>
             <el-table-column prop="video_info.custom_info.description" label="描述" />
             <!-- 右侧固定 -->
             <el-table-column
@@ -893,6 +898,18 @@ export default {
                 return "";
             }
             return this.rootUrl + "/video/" + this.playVideoKey + ".mp4";
+        },
+        // 时长（毫秒）转为字符串
+        duration2string(duration){
+            var time = Math.round(duration/1000);
+            var m = Math.floor(time/60);
+            var s = time-60*m;
+            var res = m + ":";
+            if (s<10){
+                res+="0";
+            }
+            res += s;
+            return res;
         },
         // 时间戳转日期
         timestamp2date(timestamp) {
