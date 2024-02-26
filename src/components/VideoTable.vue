@@ -306,16 +306,16 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label="人物" width="80">
+            <el-table-column label="人物" width="65">
                 <template #default="scope">{{
                     scope.row.video_info.custom_info.people.join(",")
                 }}</template>
             </el-table-column>
-            <el-table-column prop="favor_name" label="收藏夹" width="70" />
+            <el-table-column prop="favor_name" label="收藏夹" width="75" />
             <el-table-column prop="video_info.owner_name" label="UP主" width="100" />
-            <el-table-column label="下载时间" width="85">
+            <el-table-column label="下载时间" width="80">
                 <template #default="scope">{{
-                    timestamp2date(scope.row.video_info.update_time)
+                    timestamp2date(scope.row.video_info.download_time)
                 }}</template>
             </el-table-column>
             <el-table-column label="星级" width="30">
@@ -338,7 +338,7 @@
             <el-table-column
                 :fixed="isLandscapeDevice ? 'right' : false"
                 label="操作"
-                width="60"
+                width="50"
             >
                 <template #default="scope">
                     <el-button
@@ -370,7 +370,7 @@
                     </el-button>
                 </template>
             </el-table-column>
-            <el-table-column fixed="right" label="播放" width="38">
+            <el-table-column fixed="right" label="播放" width="30">
                 <template #default="scope">
                     <el-button
                         type="primary"
@@ -486,7 +486,7 @@
             <!-- 播放列表 -->
             <el-row>
                 <el-col v-for="row in tableData" :key="row" :span="cardSpan">
-                    <el-card :body-style="{ padding: '0px' }" style="height: 150px">
+                    <el-card :body-style="{ padding: '0px' }" style="height: 120px">
                         <el-button
                             type="primary"
                             size="small"
@@ -507,10 +507,10 @@
                                 </svg>
                             </el-icon>
                         </el-button>
-                        <div style="height: 50px">
+                        <div style="height: 60px">
                             <el-image
                                 :src="coverUrl(row.video_info.cover)"
-                                style="height: 50px"
+                                style="height: 60px"
                                 :fit="contain"
                             />
                         </div>
@@ -542,7 +542,7 @@ export default {
             // 分页器
             videoNum: 0, // 视频总量
             curPage: 1, // 当前页
-            pageSize: 12,
+            pageSize: 48,
             // 以下列表的变量表示多选
             selectedSort: -1,
             inputKeywords: "",
@@ -948,7 +948,7 @@ export default {
     text-align: center;
 }
 :deep(.el-table .cell) {
-    padding: 0 6px;
+    padding: 0 2px;
 }
 :deep(.el-table .el-table__cell) {
     padding: 0 0;
