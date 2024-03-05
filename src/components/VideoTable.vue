@@ -601,6 +601,7 @@ export default {
             //页面高度
             windowHeight: window.innerHeight + "px",
             windowWidth: window.innerWidth + "px",
+            windowHeight_96: window.innerHeight*0.96 + "px",
             // 是横屏设备还是竖屏设备，true表示横屏
             isLandscapeDevice: true,
             // 播放列表card的span
@@ -763,11 +764,11 @@ export default {
             const video = document.getElementById("video");
             const underVideo = document.getElementById("underVideo");
             if (!this.isLandscapeDevice && v.video_info.direction == "horizontal") {
-                video.style = `width:${this.windowHeight}; height:${this.windowWidth}; transform:rotate(90deg); transform-origin:0 0; position:absolute; left:${this.windowWidth}`;
+                video.style = `width:${this.windowHeight_96}; height:${this.windowWidth}; transform:rotate(90deg); transform-origin:0 0; position:absolute; left:${this.windowWidth}`;
             } else {
-                video.style = `width:${this.windowWidth}; height:${this.windowHeight}`;
+                video.style = `width:${this.windowWidth}; height:${this.windowHeight_96}`;
             }
-            underVideo.style = `position:absolute; top:${this.windowHeight}`;
+            underVideo.style = `position:absolute; top:${this.windowHeight_96}`;
             setTimeout(() => {
                 video.play();
             }, 500);
@@ -957,6 +958,7 @@ export default {
         window.addEventListener("resize", () => {
             this.windowHeight = window.innerHeight + "px";
             this.windowWidth = window.innerWidth + "px";
+            this.windowHeight_96 = window.innerHeight*0.96 + "px";
             if (window.innerHeight > window.innerWidth) {
                 this.isLandscapeDevice = false;
                 this.cardSpan = 4;
