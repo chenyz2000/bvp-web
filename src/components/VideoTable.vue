@@ -222,6 +222,8 @@
                             >
                         </el-option>
                     </el-select>
+                    <el-input-number v-model="min_duration" :step="60" :min="0"/>
+                    <el-input-number v-model="max_duration" :step="60" :min="0"/>
                 </el-collapse-item>
             </el-collapse>
             <el-button type="primary" @click="handleReset"> 清空 </el-button>
@@ -560,6 +562,8 @@ export default {
             selectedExcludeFavorList: [],
             selectedExcludePeopleList: [],
             selectedExcludeTagList: [],
+            min_duration: 0,
+            max_duration: 0,
             // 表格选中的行
             selectedRowList: [],
             // 表格
@@ -643,7 +647,11 @@ export default {
                         "&clarity=" +
                         this.selectedClarityList +
                         "&vcodec=" +
-                        this.selectedVcodec
+                        this.selectedVcodec+
+                        "&min_duration="+
+                        this.min_duration+
+                        "&max_duration="+
+                        this.max_duration
                 )
                 .then((response) => {
                     console.log(response);
@@ -693,6 +701,8 @@ export default {
             this.selectedExcludeTagList = [];
             this.selectedClarityList = [];
             this.selectedVcodec = "";
+            this.min_duration = 0;
+            this.max_duration = 0;
             this.getData();
         },
         // 处理修改筛选条件
@@ -901,9 +911,8 @@ export default {
         },
         // 时长（毫秒）转为字符串
         duration2string(duration){
-            var time = Math.round(duration/1000);
-            var m = Math.floor(time/60);
-            var s = time-60*m;
+            var m = Math.floor(duration/60);
+            var s = duration-60*m;
             var res = m + ":";
             if (s<10){
                 res+="0";
