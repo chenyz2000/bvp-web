@@ -315,9 +315,9 @@
             </el-table-column>
             <el-table-column prop="favor_name" label="收藏夹" width="75" />
             <el-table-column prop="video_info.owner_name" label="UP主" width="100" />
-            <el-table-column label="下载时间" width="80">
+            <el-table-column label="发布时间" width="80">
                 <template #default="scope">{{
-                    timestamp2date(scope.row.video_info.download_time)
+                    timestamp2date(scope.row.video_info.custom_info.publish_time)
                 }}</template>
             </el-table-column>
             <el-table-column label="星级" width="30">
@@ -572,11 +572,12 @@ export default {
             property: {},
             // 排序映射
             sortMappings: [
-                { label: "下载时间倒序", value: -1 },
-                { label: "下载时间顺序", value: 1 },
+                { label: "发布时间倒序", value: -1 },
+                { label: "发布时间顺序", value: 1 },
+                { label: "下载时间倒序", value: -2},
                 { label: "星级倒序", value: -3 },
                 { label: "标题顺序", value: 4 },
-                { label: "UP主顺序", value: 5 },
+                { label: "UP主顺序", value: 5 }
             ],
             // 播放视频
             playVideo: false,
@@ -923,7 +924,8 @@ export default {
         },
         // 时间戳转日期
         timestamp2date(timestamp) {
-            var date = new Date(timestamp);
+            if (timestamp<=0) return "";
+            var date = new Date(timestamp*1000);
             var Y = this.dateInt2string(date.getFullYear());
             var M = this.dateInt2string(date.getMonth() + 1);
             var D = this.dateInt2string(date.getDate());
