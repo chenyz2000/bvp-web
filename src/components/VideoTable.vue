@@ -93,7 +93,6 @@
                 collapse-tags
                 placeholder="排序"
                 @change="handleChangeFilter"
-                clearable
             >
                 <el-option
                     v-for="(val, key) in sortMappings"
@@ -265,7 +264,7 @@
                 clearable
                 placeholder="标签（逗号分割）"
             />
-            <el-button type="primary" @click="setCustom">修改人物、标签</el-button>
+            <el-button type="primary" @click="handleBatchSubmit">修改人物、标签</el-button>
         </el-dialog>
         <datalist id="favorDataList">
             <option v-for="item in property.favor" :key="item.name" :value="item.name" />
@@ -572,6 +571,7 @@ export default {
             property: {},
             // 排序映射
             sortMappings: [
+                { label: "随机排序", value: 0},
                 { label: "发布时间倒序", value: -1 },
                 { label: "发布时间顺序", value: 1 },
                 { label: "下载时间倒序", value: -2},
@@ -620,7 +620,7 @@ export default {
           调接口
         */
         // 获取列表数据
-        getData() {
+        getData(newRandomSort) {
             axios
                 .get(
                     this.rootUrl +
@@ -630,6 +630,8 @@ export default {
                         this.pageSize +
                         "&sort=" +
                         this.selectedSort +
+                        "&new_random_sort="+
+                        newRandomSort+
                         "&keywords=" +
                         this.inputKeywords +
                         "&favor=" +
@@ -687,7 +689,7 @@ export default {
         // 处理页数变更
         handleCurrentPageChange(val) {
             this.curPage = val;
-            this.getData();
+            this.getData(false);
             console.log(this.curPage);
         },
         // 处理重置
@@ -705,12 +707,12 @@ export default {
             this.selectedVcodec = "";
             this.min_duration = 0;
             this.max_duration = 0;
-            this.getData();
+            this.getData(true);
         },
         // 处理修改筛选条件
         handleChangeFilter() {
             this.curPage = 1;
-            this.getData();
+            this.getData(true);
         },
         // 处理Refresh
         handleRefresh() {
@@ -725,7 +727,7 @@ export default {
                     message: "refresh完毕",
                     type: "success",
                 });
-                this.getData();
+                this.getData(true);
                 this.getProperty();
             });
         },
@@ -807,7 +809,7 @@ export default {
                 })
                 .then(() => {
                     this.showCustomDialog = false;
-                    this.getData();
+                    this.getData(false);
                     this.getProperty();
                 });
         },
@@ -868,12 +870,12 @@ export default {
                     this.showBatchDialog = false;
                     this.$refs.table.clearSelection();
                     this.selectedRowList = [];
-                    this.getData();
+                    this.getData(false);
                     this.getProperty();
                 });
         },
         // 批量修改人物和标签
-        setCustom() {
+        handleBatchSubmit() {
             var videoNameList = [];
             for (var i = 0; i < this.selectedRowList.length; i++) {
                 var row = this.selectedRowList[i];
@@ -890,7 +892,7 @@ export default {
                     this.showBatchDialog = false;
                     this.$refs.table.clearSelection();
                     this.selectedRowList = [];
-                    this.getData();
+                    this.getData(false);
                     this.getProperty();
                 });
         },
@@ -951,7 +953,7 @@ export default {
     */
     mounted() {
         console.log("rootUrl", this.rootUrl);
-        this.getData();
+        this.getData(true);
         this.getProperty();
         if (window.innerHeight > window.innerWidth) {
             this.isLandscapeDevice = false;
