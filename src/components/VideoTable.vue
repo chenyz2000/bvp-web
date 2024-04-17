@@ -20,9 +20,9 @@
                 @change="handleChangeFilter"
             >
                 <el-option
-                    v-for="item in property.favor"
+                    v-for="(item, key) in property.favor"
                     :value="item.name"
-                    :key="item.name"
+                    :key="key"
                 >
                     <span style="float：left">{{ item.name }}</span>
                     <span style="float: right; color: var(--el-text-color-secondary)">{{
@@ -39,9 +39,9 @@
                 @change="handleChangeFilter"
             >
                 <el-option
-                    v-for="item in property.direction"
+                    v-for="(item, key) in property.direction"
                     :value="item.name"
-                    :key="item.name"
+                    :key="key"
                 >
                     <span style="float：left">{{ item.name }}</span>
                     <span style="float: right; color: var(--el-text-color-secondary)">{{
@@ -58,9 +58,9 @@
                 @change="handleChangeFilter"
             >
                 <el-option
-                    v-for="item in property.people"
+                    v-for="(item, key) in property.people"
                     :value="item.name"
-                    :key="item.name"
+                    :key="key"
                 >
                     <span style="float：left">{{ item.name }}</span>
                     <span style="float: right; color: var(--el-text-color-secondary)">{{
@@ -77,9 +77,9 @@
                 @change="handleChangeFilter"
             >
                 <el-option
-                    v-for="item in property.tag"
+                    v-for="(item, key) in property.tag"
                     :value="item.name"
-                    :key="item.name"
+                    :key="key"
                 >
                     <span style="float：left">{{ item.name }}</span>
                     <span style="float: right; color: var(--el-text-color-secondary)">{{
@@ -115,9 +115,9 @@
                         @change="handleChangeFilter"
                     >
                         <el-option
-                            v-for="item in property.favor"
+                            v-for="(item, key) in property.favor"
                             :value="item.name"
-                            :key="item.name"
+                            :key="key"
                         >
                             <span style="float：left">{{ item.name }}</span>
                             <span
@@ -138,9 +138,9 @@
                         @change="handleChangeFilter"
                     >
                         <el-option
-                            v-for="item in property.people"
+                            v-for="(item, key) in property.people"
                             :value="item.name"
-                            :key="item.name"
+                            :key="key"
                         >
                             <span style="float：left">{{ item.name }}</span>
                             <span
@@ -161,9 +161,9 @@
                         @change="handleChangeFilter"
                     >
                         <el-option
-                            v-for="item in property.tag"
+                            v-for="(item, key) in property.tag"
                             :value="item.name"
-                            :key="item.name"
+                            :key="key"
                         >
                             <span style="float：left">{{ item.name }}</span>
                             <span
@@ -184,9 +184,9 @@
                         @change="handleChangeFilter"
                     >
                         <el-option
-                            v-for="item in property.clarity"
+                            v-for="(item, key) in property.clarity"
                             :value="item.name"
-                            :key="item.name"
+                            :key="key"
                         >
                             <span style="float：left">{{ item.name }}</span>
                             <span
@@ -207,9 +207,9 @@
                         @change="handleChangeFilter"
                     >
                         <el-option
-                            v-for="item in property.vcodec"
+                            v-for="(item, key) in property.vcodec"
                             :value="item.name"
-                            :key="item.name"
+                            :key="key"
                         >
                             <span style="float：left">{{ item.name }}</span>
                             <span
@@ -267,13 +267,13 @@
             <el-button type="primary" @click="handleBatchSubmit">修改人物、标签</el-button>
         </el-dialog>
         <datalist id="favorDataList">
-            <option v-for="item in property.favor" :key="item.name" :value="item.name" />
+            <option v-for="(item, key) in property.favor" :key="key" :value="item.name" />
         </datalist>
         <datalist id="peopleDataList">
-            <option v-for="item in property.people" :key="item.name" :value="item.name" />
+            <option v-for="(item, key) in property.people" :key="key" :value="item.name" />
         </datalist>
         <datalist id="tagDataList">
-            <option v-for="item in property.tag" :key="item.name" :value="item.name" />
+            <option v-for="(item, key) in property.tag" :key="key" :value="item.name" />
         </datalist>
 
         <!-- 表格 -->
@@ -284,7 +284,7 @@
             border="true"
             stripe="true"
             @selection-change="handleTableSelection"
-            :row-key="(row) => row.item_name"
+            :row-key="(row) => row.page_name+';'+row.page_name"
         >
             <!-- 左侧固定 -->
             <el-table-column type="selection" width="25" :reserve-selection="true" />
@@ -491,7 +491,7 @@
             />
             <!-- 播放列表 -->
             <el-row>
-                <el-col v-for="row in tableData" :key="row" :span="cardSpan">
+                <el-col v-for="(row, key) in tableData" :key="key" :span="cardSpan">
                     <el-card :body-style="{ padding: '0px' }" style="height: 120px">
                         <el-button
                             type="primary"
@@ -707,6 +707,8 @@ export default {
             this.selectedVcodec = "";
             this.min_duration = 0;
             this.max_duration = 0;
+            this.$refs.table.clearSelection();
+            this.selectedRowList = [],
             this.getData(true);
         },
         // 处理修改筛选条件
